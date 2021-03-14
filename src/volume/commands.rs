@@ -1,9 +1,21 @@
 // commands relating to the volume structure
 
 use crate::commands::MerlinError;
-use super::{Volume, Selection};
+use super::{Volume, selection::Selection};
 
 impl<'a> Volume<'a> {
+	// return the number of the current line
+
+	pub fn spot(&self) -> usize {
+		self.line + 1
+	}
+
+	// return the length of the file
+
+	pub fn span(&self) -> usize {
+		self.buffer.len()
+	}
+	
 	// move up or down a line
 
 	pub fn traverse(&mut self, n: isize) {
@@ -41,8 +53,6 @@ impl<'a> Volume<'a> {
 
 	pub fn peer(&self, part: Selection) -> String {
 		match part {
-			Selection::Entire    => self.buffer.as_slice().join("\n"),
-			Selection::Current   => self.buffer.get(self.line).unwrap().to_string(),
 			Selection::One(i)    => self.buffer.get(i).unwrap().to_string(),
 			Selection::Few(b, e) => self.buffer.as_slice()[b..e].join("\n"),
 		}
@@ -55,7 +65,7 @@ impl<'a> Volume<'a> {
 
 		// push the first line to the end of the current lines
 
-		self.buffer[self.line].push_str(lines.next().unwrap());
+		self.current().push_str(lines.next().unwrap());
 
 		// loop through the remaining lines and intersplice them in the buffer
 
@@ -81,10 +91,6 @@ impl<'a> Volume<'a> {
 
 	pub fn transmute(&mut self, part: Selection, replace: &str) {
 		match part {
-			Selection::Entire    => self.buffer = replace.lines()
-						  .map(|s| s.to_string())
-						  .collect::<Vec<String>>(),
-			Selection::Current   => self.insert_lines(self.line, replace),
 			Selection::One(l)    => self.insert_lines(l, replace),
 			Selection::Few(b, e) => {
 				// remove the selected lines
@@ -101,15 +107,16 @@ impl<'a> Volume<'a> {
 	// shave off parts of text from a line
 
 	pub fn shave(&mut self, amount: isize) {
-		let len = self.buffer[self.line].len();
+		let chars = self.current().chars();
+		let len = chars.count();
 		let abs = amount.abs() as usize;
 
-		if abs >= self.buffer[self.line].len() { // clear the line if the amount we want to remove is equal or greater than the length of the line
-			self.buffer[self.line].clear();
+		if abs >= len { // clear the line if the amount we want to remove is equal or greater than the length of the line
+			self.current().clear();
 		} else if amount > 0 { // remove from the end...
-			self.buffer[self.line].replace_range(len-abs.., "");
-		} else if amount < 0 { // remove from the beginning
-			self.buffer[self.line].replace_range(..abs, "");
+			self.current().replace_range(len-abs.., "");
+		} else { // remove from the beginning
+			self.current().replace_range(..abs, "");
 		}
 	}
 
@@ -118,7 +125,7 @@ impl<'a> Volume<'a> {
 	fn insert_lines(&mut self, index: usize, lines: &str) {
 		self.buffer.remove(index);
 
-		for (i, line) in lines.lines().enumerate() {
+		for line in lines.lines() {
 			self.buffer.insert(index + 1, line.to_string());
 		}
 	}

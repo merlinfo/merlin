@@ -1,6 +1,7 @@
 use std::fmt;
 
 mod commands;
+pub mod selection;
 
 // an enum representing the states of a volume buffer
 
@@ -29,25 +30,31 @@ impl<'a> fmt::Display for VolumeState<'a> {
 
 pub struct Volume<'a> {
 	pub name: VolumeState<'a>,
-	pub buffer: Vec<String>,
+	buffer: Vec<String>,
 
-	pub line: usize,
+	line: usize,
 	pub written: bool,
 }
 
 impl<'a> Volume<'a> {
-	// create an empty buffer
+	// return the length of the buffer
 
-	pub fn new(num: usize) -> Volume<'a> {
-		Volume { name: VolumeState::NoFile(num), buffer: vec![String::from("")], line: 0, written: false }
+	pub fn len(&self) -> usize {
+		self.buffer.len()
 	}
 
 	// create a buffer with some existing text
 
 	pub fn from_text(num: usize, contents: &str) -> Volume<'a> {
+		let mut buff = contents.lines().map(|s| s.to_string()).collect::<Vec<String>>();
+		
+		if buff.len() == 0 {
+			buff = vec![String::from("")];
+		}
+
 		Volume {
 			name: VolumeState::NoFile(num),
-			buffer: contents.lines().map(|s| s.to_string()).collect::<Vec<String>>(),
+			buffer: buff,
 			line: 0,
 			written: false
 		}
@@ -63,6 +70,12 @@ impl<'a> Volume<'a> {
 			written: true
 		}
 	}*/
+
+	// return a mutable reference to the current line
+
+	fn current(&mut self) -> &mut String {
+		&mut self.buffer[self.line]
+	}
 }
 
 impl<'a> fmt::Display for Volume<'a> {
@@ -77,13 +90,4 @@ impl<'a> fmt::Display for Volume<'a> {
 
 		write!(f, "{} {}", self.name, show_written())
 	}
-}
-
-// enum that represents a bit of text
-
-pub enum Selection {
-	Entire,
-	Current,
-	One(usize),
-	Few(usize, usize),
 }
