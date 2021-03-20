@@ -127,7 +127,7 @@ impl<'a> Plane<'a> {
 		self.push(String::from("\t"));
 	}
 
-	pub fn nomen(&mut self, atoms: &[String], name: &str) {
+	pub fn nomen(&mut self, atoms: &[String], name: &'a str) {
 		self.nomens.push(Nomen::new(name, atoms.join(" ")))
 	}
 }

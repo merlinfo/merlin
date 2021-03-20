@@ -70,4 +70,8 @@ impl<'a> Plane<'a> {
 	pub fn push(&mut self, item: String) {
 		self.stack.push(item);
 	}
+
+	/*pub fn expand_nomen(&self, nomen: &str) -> Option<&str> {
+		for n in self.nomens
+	}*/
 }
