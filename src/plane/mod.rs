@@ -40,7 +40,7 @@ pub struct Plane<'a> {
 
 	running: bool,
 
-	nomens: Vec<nomen::Nomen<'a>>,
+	nomens: Vec<nomen::Nomen>,
 }
 
 impl<'a> Plane<'a> {
@@ -71,7 +71,23 @@ impl<'a> Plane<'a> {
 		self.stack.push(item);
 	}
 
-	/*pub fn expand_nomen(&self, nomen: &str) -> Option<&str> {
-		for n in self.nomens
-	}*/
+	// get the index of a nomen
+
+	pub fn get_nomen_index(&self, name: &str) -> Option<usize> {
+		for (i, n) in self.nomens.iter().enumerate() {
+			if n == name {
+				return Some(i);
+			}
+		}
+
+		None
+	}
+
+	// print an error if they are turned on
+
+	pub fn error(&self) {
+		if self.show_errors {
+			eprintln!("?");
+		}
+	}
 }

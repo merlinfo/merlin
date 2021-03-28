@@ -9,6 +9,8 @@ pub enum MerlinError {
 	InvalidExternal,
 	InvalidOrNoArguments,
 	NoVolumes,
+	CreationFailed,
+	ReadFailed,
 }
 
 // An enum that represents commands
@@ -39,7 +41,6 @@ pub enum Command {
 	Space,
 	Tab,
 	Mirror,
-	Error,
 	Atom,
 	Scribe,
 	Adieu,
@@ -76,7 +77,6 @@ impl FromStr for Command {
 			"space"     => Ok(Command::Space),
 			"tab"       => Ok(Command::Tab),
 			"mirror"    => Ok(Command::Mirror),
-			"error"     => Ok(Command::Error),
 			"atom"      => Ok(Command::Atom),
 			"scribe"    => Ok(Command::Scribe),
 			"adieu"     => Ok(Command::Adieu),
@@ -91,11 +91,11 @@ impl Command {
 
 	fn valid(&self, args: usize) -> bool {
 		match self {
-			Command::Genesis | Command::Biblio    | Command::Spot    | Command::Span   | Command::Molecule | Command::Pen  | Command::Orbit  | Command::Decay    | Command::Destroy | 
-			Command::Newline | Command::Space     | Command::Tab     | Command::Mirror | Command::Error    | Command::Atom | Command::Scribe | Command::Adieu                         => true,
-			Command::Focus   | Command::Traverse  | Command::Appear  | Command::Shave  | Command::Shelve   | Command::Peer | Command::Incant | Command::Inscribe | Command::Trample | 
-			Command::Nomen                                                                                                                                                            => args >= 1,
-			Command::Infuse  | Command::Transmute | Command::Tether                                                                                                                   => args >= 2,
+			Command::Genesis | Command::Biblio    | Command::Spot    | Command::Span   | Command::Molecule | Command::Pen    | Command::Orbit  | Command::Decay    | Command::Destroy | 
+			Command::Newline | Command::Space     | Command::Tab     | Command::Mirror | Command::Atom     | Command::Scribe | Command::Adieu                                           => true,
+			Command::Focus   | Command::Traverse  | Command::Appear  | Command::Shave  | Command::Shelve   | Command::Peer   | Command::Incant | Command::Inscribe | Command::Trample | 
+			Command::Nomen                                                                                                                                                              => args >= 1,
+			Command::Infuse  | Command::Transmute | Command::Tether                                                                                                                     => args >= 2,
 		}
 	}
 
@@ -114,7 +114,7 @@ impl Command {
 			match self {
 				Command::Incant  | Command::Infuse   | Command::Tether   | Command::Nomen                                                                                  => return Ok(args),
 				Command::Biblio  | Command::Spot     | Command::Span     | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
-				Command::Newline | Command::Space    | Command::Tab      | Command::Mirror   | Command::Error  | Command::Atom     | Command::Scribe  | Command::Adieu     => return Ok(0),
+				Command::Newline | Command::Space    | Command::Tab      | Command::Mirror   | Command::Atom   | Command::Scribe   | Command::Adieu                        => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample                      => return Ok(1),
 				Command::Peer                                                                                                                                              => return Ok(choose_mm(2, 1)),
 				Command::Transmute                                                                                                                                         => return Ok(choose_mm(3, 2)),

@@ -34,6 +34,11 @@ impl<'a> Plane<'a> {
 
 	}
 
+	// open a new file
+
+	pub fn summon(&mut self, path: &str) {
+	}
+
 	// close a file / buffer
 
 	pub fn shelve(&mut self, index: usize) -> Result<(), MerlinError> {
@@ -127,7 +132,11 @@ impl<'a> Plane<'a> {
 		self.push(String::from("\t"));
 	}
 
-	pub fn nomen(&mut self, atoms: &[String], name: &'a str) {
+	pub fn nomen(&mut self, atoms: &[String], name: String) {
+		if let Some(i) = self.get_nomen_index(&name) {
+			self.nomens.remove(i);
+		}
+
 		self.nomens.push(Nomen::new(name, atoms.join(" ")))
 	}
 }

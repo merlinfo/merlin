@@ -43,10 +43,15 @@ impl<'a> Plane<'a> {
 
 	fn parse_atom(&mut self, atom: &str) -> Option<String> {
 		if let Some(stripped) = atom.strip_prefix(";") { // the atom is a command
-			if let Err(_) = self.parse_and_run(strip_nl(stripped)) { // the command wasn't successful
-				if self.show_errors {
-					eprintln!("?");
-				}
+			let snl = strip_nl(stripped);
+
+			match self.parse_command(snl) {
+				Ok((command, data)) => if self.run_and_handle(command, &data).is_err() { self.error() },
+				Err(_)              =>
+					match self.get_nomen_index(snl) {
+						Some(i) => self.parse_line_atom(self.nomens.get(i).unwrap().expand()),
+						None    => self.error()
+					}
 			}
 		} else {
 			let mut out = atom.to_string();
@@ -61,21 +66,19 @@ impl<'a> Plane<'a> {
 		None
 	}
 
-	// parse and run!
+	// run and handle!!
 
-	fn parse_and_run(&mut self, name: &str) -> Result<(), MerlinError> {
-		let (command, data) = self.parse_command(name)?;
-
-		if let Some(t) = self.run_command(command, &data)? {
+	fn run_and_handle(&mut self, command: Command, data: &Vec<String>) -> Result<(), MerlinError> {
+		if let Some(t) = self.run_command(command, data)? {
 			match t {
 				Text::Value(s)   => {
 					if self.print_result {
-						println!("{}", s);
+						println!("{}", strip_nl(&s));
 					} else {
 						self.push(s);
 					}
 				}
-				Text::Display(s) => println!("{}", s),
+				Text::Display(s) => println!("{}", strip_nl(&s)),
 			}
 		}
 
@@ -119,9 +122,9 @@ impl<'a> Plane<'a> {
 			Command::Tab                               => self.tab(),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
-			Command::Error                             => self.show_errors = !self.show_errors,
 			Command::Mirror                            => self.print_result = !self.print_result,
 			Command::Adieu                             => self.running = false,
+			Command::Nomen                             => self.nomen(&data[..data.len()-1], data.last().unwrap().to_string()),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume

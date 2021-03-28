@@ -3,6 +3,9 @@ use std::fmt;
 mod commands;
 pub mod selection;
 
+use std::{fs, path::Path};
+use crate::commands::MerlinError;
+
 // an enum representing the states of a volume buffer
 
 pub enum VolumeState<'a> {
@@ -60,16 +63,20 @@ impl<'a> Volume<'a> {
 		}
 	}
 
-	// create a named buffer from a file
+	pub fn from_file(path: &str) -> Result<Volume<'a>, MerlinError> {
+		let mut buffer = vec![""];
 
-	/*pub fn from_file(path: &str) -> Result<Volume<'a>> {
-		Volume {
-			name: VolumeSate::File(path),
-			buffer: 
-			line: 0,
-			written: true
+		match fs::read_to_string(path) {
+			Ok(data) => buffer = data.lines().collect::<Vec<String>>(),
+			Err(e)   => {
+				if e == std::io::Error::NotFound {
+					fs::File::create(&Path::new(path)).or(Err(MerlinError::CreationFailed))?;
+				} else {
+					return Err(Merlin::ReadFailed);
+				}
+			}
 		}
-	}*/
+	}
 
 	// return a mutable reference to the current line
 
