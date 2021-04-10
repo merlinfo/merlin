@@ -6,7 +6,9 @@ use std::io::{Write, Read};
 
 // run an external command and capture its output
 
-pub fn incant(args: &Vec<String>) -> Result<String, MerlinError> {
+pub fn incant(script: &str) -> Result<String, MerlinError> {
+	let args = script.split_whitespace().collect::<Vec<&str>>();
+
 	let command = Command::new(&args[0])
 		.args(&args[1..])
 		.stdout(Stdio::piped())
@@ -20,7 +22,9 @@ pub fn incant(args: &Vec<String>) -> Result<String, MerlinError> {
 
 // send text to an external command
 
-pub fn infuse(input: &str, args: &[String]) -> Result<String, MerlinError> {
+pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
+	let args = script.split_whitespace().collect::<Vec<&str>>();
+
 	let command = Command::new(&args[0])
 		.args(&args[1..])
 		.stdin(Stdio::piped())

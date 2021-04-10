@@ -112,10 +112,11 @@ impl Command {
 			};
 
 			match self {
-				Command::Incant  | Command::Infuse   | Command::Tether   | Command::Nomen                                                                                  => return Ok(args),
+				Command::Tether  | Command::Nomen                                                                                                                          => return Ok(args),
 				Command::Biblio  | Command::Spot     | Command::Span     | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
 				Command::Newline | Command::Space    | Command::Tab      | Command::Mirror   | Command::Atom   | Command::Scribe   | Command::Adieu                        => return Ok(0),
-				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample                      => return Ok(1),
+				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant    => return Ok(1),
+				Command::Infuse                                                                                                                                            => return Ok(2),
 				Command::Peer                                                                                                                                              => return Ok(choose_mm(2, 1)),
 				Command::Transmute                                                                                                                                         => return Ok(choose_mm(3, 2)),
 				Command::Genesis                                                                                                                                           => return Ok(choose_mm(1, 0))

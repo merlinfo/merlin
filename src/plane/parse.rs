@@ -49,7 +49,7 @@ impl<'a> Plane<'a> {
 				Ok((command, data)) => if self.run_and_handle(command, &data).is_err() { self.error() },
 				Err(_)              =>
 					match self.get_nomen_index(snl) {
-						Some(i) => self.parse_line_atom(self.nomens.get(i).unwrap().expand()),
+						Some(i) => /*self.parse_line_atom(self.nomens.get(i).unwrap().expand())*/println!("don't work :pensive:"),
 						None    => self.error()
 					}
 			}
@@ -109,8 +109,8 @@ impl<'a> Plane<'a> {
 		match command { // check what command is being used
 			Command::Genesis                           => self.genesis(&data[0]),
 			Command::Biblio if self.volumes.len() > 0  => return oksome(Text::Display(self.biblio())),
-			Command::Incant                            => return oksval(commands::incant(data)?),
-			Command::Infuse                            => return oksval(commands::infuse(&data[0], &data[1..])?),
+			Command::Incant                            => return oksval(commands::incant(&data[0])?),
+			Command::Infuse                            => return oksval(commands::infuse(&data[0], &data[1])?),
 			Command::Molecule                          => if let Some(s) = self.molecule() { return oksome(Text::Display(s));             },
 			Command::Pen                               => if let Some(s) = self.pen()      { return oksome(Text::Display(s.to_string())); },
 			Command::Orbit                             => self.orbit()?,

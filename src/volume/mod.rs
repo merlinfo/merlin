@@ -63,20 +63,19 @@ impl<'a> Volume<'a> {
 		}
 	}
 
-	pub fn from_file(path: &str) -> Result<Volume<'a>, MerlinError> {
+	/*pub fn from_file(fpath: &str) -> Result<Volume<'a>, MerlinError> {
 		let mut buffer = vec![""];
-
-		match fs::read_to_string(path) {
-			Ok(data) => buffer = data.lines().collect::<Vec<String>>(),
-			Err(e)   => {
-				if e == std::io::Error::NotFound {
-					fs::File::create(&Path::new(path)).or(Err(MerlinError::CreationFailed))?;
-				} else {
-					return Err(Merlin::ReadFailed);
-				}
+		let path = Path::new(fpath);
+		
+		if path.exists() {
+			match fs::read_to_string(fpath) {
+				Ok(data) => buffer = data.lines().map(|x| x.parse()).collect(),
+				Err(_)   => return Err(MerlinError::ReadFailed),
 			}
+		} else {
+			fs::File::create(path).or(Err(MerlinError::CreationFailed))?;
 		}
-	}
+	}*/
 
 	// return a mutable reference to the current line
 
