@@ -48,9 +48,9 @@ impl<'a> Plane<'a> {
 			match self.parse_command(snl) {
 				Ok((command, data)) => if self.run_and_handle(command, &data).is_err() { self.error() },
 				Err(_)              =>
-					match self.get_nomen_index(snl) {
-						Some(i) => /*self.parse_line_atom(self.nomens.get(i).unwrap().expand())*/println!("don't work :pensive:"),
-						None    => self.error()
+					match self.get_nomen(snl) {
+						Some((_, n)) => println!("SAD"),
+						None         => self.error()
 					}
 			}
 		} else {
@@ -117,14 +117,15 @@ impl<'a> Plane<'a> {
 			Command::Decay                             => self.decay(),
 			Command::Destroy                           => self.destroy(),
 			Command::Tether                            => return oksval(commands::tether(&data[..data.len()-1], &data.last().unwrap())),
-			Command::Newline                           => self.newline(),
-			Command::Space                             => self.space(),
-			Command::Tab                               => self.tab(),
+			Command::Newline                           => self.push(String::from("\n")),
+			Command::Space                             => self.push(String::from(" ")),
+			Command::Tab                               => self.push(String::from("\t")),
+			Command::Blank                             => self.push(String::from("")),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
 			Command::Mirror                            => self.print_result = !self.print_result,
 			Command::Adieu                             => self.running = false,
-			Command::Nomen                             => self.nomen(&data[..data.len()-1], data.last().unwrap().to_string()),
+			Command::Nomen                             => self.nomen(data[..data.len()-1].join(" "), data.last().unwrap().to_string()),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume

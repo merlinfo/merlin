@@ -18,7 +18,7 @@ pub enum Vision {
 impl fmt::Display for Vision {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
-			Vision::Atom => write!(f, "| "),
+			Vision::Atom => write!(f, ", "),
 			Vision::Scribe => write!(f, ""),
 		}
 	}
@@ -73,10 +73,10 @@ impl<'a> Plane<'a> {
 
 	// get the index of a nomen
 
-	pub fn get_nomen_index(&self, name: &str) -> Option<usize> {
+	pub fn get_nomen(&self, name: &str) -> Option<(usize, &nomen::Nomen)> {
 		for (i, n) in self.nomens.iter().enumerate() {
 			if n == name {
-				return Some(i);
+				return Some((i, n));
 			}
 		}
 

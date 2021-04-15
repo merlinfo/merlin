@@ -118,25 +118,11 @@ impl<'a> Plane<'a> {
 		self.stack.clear();
 	}
 	
-	// add a newline, space, or a tab to the stack to the stack
-
-	pub fn newline(&mut self) {
-		self.push(String::from("\n"));
-	}
-
-	pub fn space(&mut self) {
-		self.push(String::from(" "));
-	}
-
-	pub fn tab(&mut self) {
-		self.push(String::from("\t"));
-	}
-
-	pub fn nomen(&mut self, atoms: &[String], name: String) {
-		if let Some(i) = self.get_nomen_index(&name) {
+	pub fn nomen(&mut self, atoms: String, name: String) {
+		if let Some((i, _)) = self.get_nomen(&name) {
 			self.nomens.remove(i);
 		}
 
-		self.nomens.push(Nomen::new(name, atoms.join(" ")))
+		self.nomens.push(Nomen::new(name, atoms))
 	}
 }
