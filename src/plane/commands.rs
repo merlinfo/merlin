@@ -17,8 +17,6 @@ impl Plane {
 			output.push_str(&format!("{}\n", v));
 		}
 
-		output.pop();
-
 		output
 	}
 
@@ -78,6 +76,8 @@ impl Plane {
 		if output.is_empty() {
 			return None;
 		}
+
+		output.push_str("\n");
 
 		Some(output)
 	}

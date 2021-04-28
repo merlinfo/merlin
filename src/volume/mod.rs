@@ -46,6 +46,12 @@ impl Volume {
 		self.buffer.len()
 	}
 
+	// set written to false
+
+	pub fn set_unsaved(&mut self) {
+		self.written = false;
+	}
+
 	// create a buffer with some existing text
 
 	pub fn from_text(num: usize, contents: String) -> Volume {

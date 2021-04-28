@@ -132,19 +132,25 @@ impl Plane {
 					let cvol = &mut self.volumes[self.current_volume]; // current volume
 
 					match command {
-						Command::Shelve    => self.shelve(parse_pos::<usize>(&data[0])?)?,
-						Command::Focus     => self.focus(parse_pos::<usize>(&data[0])?)?,
-						Command::Spot      => return oksval(cvol.spot().to_string()),
-						Command::Span      => return oksval(cvol.span().to_string()),
-						Command::Traverse  => cvol.traverse(parse_pos::<isize>(&data[0])?),
-						Command::Appear    => cvol.appear(parse_pos::<usize>(&data[0])?)?,
-						Command::Peer      => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
-						Command::Inscribe  => cvol.inscribe(data.remove(0)),
-						Command::Trample   => cvol.trample(data.remove(0)),
-						Command::Transmute => cvol.transmute(Selection::new(&data[1..], cvol.len())?, data.remove(0)),
-						Command::Shave     => cvol.shave(parse_pos::<isize>(&data[0])?),
-						Command::Dub       => cvol.dub(data.remove(0))?,
-						_                  => (),
+						Command::Shelve   => self.shelve(parse_pos::<usize>(&data[0])?)?,
+						Command::Focus    => self.focus(parse_pos::<usize>(&data[0])?)?,
+						Command::Spot     => return oksval(cvol.spot().to_string()),
+						Command::Span     => return oksval(cvol.span().to_string()),
+						Command::Traverse => cvol.traverse(parse_pos::<isize>(&data[0])?),
+						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?)?,
+						Command::Peer     => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
+						Command::Dub      => cvol.dub(data.remove(0))?,
+						_ => {
+							cvol.set_unsaved();
+
+							match command {
+								Command::Inscribe  => cvol.inscribe(data.remove(0)),
+								Command::Trample   => cvol.trample(data.remove(0)),
+								Command::Transmute => cvol.transmute(Selection::new(&data[1..], cvol.len())?, data.remove(0)),
+								Command::Shave     => cvol.shave(parse_pos::<isize>(&data[0])?),
+								_                  => (),
+							}
+						}
 					}
 				} else {
 					return Err(MerlinError::NoVolumes)

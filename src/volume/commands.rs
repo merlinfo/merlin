@@ -124,13 +124,18 @@ impl Volume {
 	// "dub" a buffer
 
 	pub fn dub(&mut self, f_name: String) -> Result<(), MerlinError> {
-		if Path::new(&f_name).exists() {
-			return Err(MerlinError::FileAlreadyExists);
+		match self.name {
+			VolumeState::NoFile(_) => {
+				if Path::new(&f_name).exists() {
+					return Err(MerlinError::FileAlreadyExists)
+				}
+
+				self.name = VolumeState::File(f_name);
+			
+				Ok(())
+			}
+			VolumeState::File(_) => Err(MerlinError::FileAlreadyExists),
 		}
-
-		self.name = VolumeState::File(f_name);
-
-		Ok(())
 	}
 
 	// remove a line with 1+ other lines
