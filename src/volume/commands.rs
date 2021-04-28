@@ -1,7 +1,8 @@
 // commands relating to the volume structure
 
+use std::path::Path;
 use crate::commands::MerlinError;
-use super::{Volume, selection::Selection};
+use super::{Volume, VolumeState, selection::Selection};
 
 impl Volume {
 	// return the number of the current line
@@ -118,6 +119,18 @@ impl Volume {
 		} else { // remove from the beginning
 			self.current().replace_range(..abs, "");
 		}
+	}
+
+	// "dub" a buffer
+
+	pub fn dub(&mut self, f_name: String) -> Result<(), MerlinError> {
+		if Path::new(&f_name).exists() {
+			return Err(MerlinError::FileAlreadyExists);
+		}
+
+		self.name = VolumeState::File(f_name);
+
+		Ok(())
 	}
 
 	// remove a line with 1+ other lines

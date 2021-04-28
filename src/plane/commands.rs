@@ -116,6 +116,8 @@ impl Plane {
 		self.stack.clear();
 	}
 	
+	// create a new nomen
+
 	pub fn nomen(&mut self, atoms: String, name: String) {
 		if let Some(i) = self.get_nomen(&name) {
 			self.nomens.remove(i);

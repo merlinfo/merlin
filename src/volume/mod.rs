@@ -24,7 +24,7 @@ impl fmt::Display for VolumeState {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
 			VolumeState::File(n)    => write!(f, "{}", n),
-			VolumeState::NoFile(n)  => write!(f, "*buffer {}*", n),
+			VolumeState::NoFile(n)  => write!(f, "*buffer {}*", n+1),
 		}
 	}
 }
@@ -32,11 +32,11 @@ impl fmt::Display for VolumeState {
 // a structure representing a document, or "volume"
 
 pub struct Volume {
-	pub name: VolumeState,
+	name: VolumeState,
 	buffer: Vec<String>,
 
 	line: usize,
-	pub written: bool,
+	written: bool,
 }
 
 impl Volume {

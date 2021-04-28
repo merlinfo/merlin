@@ -11,6 +11,7 @@ pub enum MerlinError {
 	NoVolumes,
 	CreationFailed,
 	ReadFailed,
+	FileAlreadyExists,
 }
 
 // An enum that represents commands
@@ -47,6 +48,7 @@ pub enum Command {
 	Adieu,
 	Nomen,
 	Summon,
+	Dub,
 }
 
 impl FromStr for Command {
@@ -85,6 +87,7 @@ impl FromStr for Command {
 			"adieu"     => Ok(Command::Adieu),
 			"nomen"     => Ok(Command::Nomen),
 			"summon"    => Ok(Command::Summon),
+			"dub"       => Ok(Command::Dub),
 			_           => Err(MerlinError::UnknownCommand),
 		}
 	}
@@ -98,8 +101,8 @@ impl Command {
 			Command::Genesis | Command::Biblio    | Command::Spot    | Command::Span   | Command::Molecule | Command::Pen    | Command::Orbit  | Command::Decay    | Command::Destroy | 
 			Command::Newline | Command::Space     | Command::Tab     | Command::Blank  | Command::Mirror   | Command::Atom   | Command::Scribe | Command::Adieu                         => true,
 			Command::Focus   | Command::Traverse  | Command::Appear  | Command::Shave  | Command::Shelve   | Command::Peer   | Command::Incant | Command::Inscribe | Command::Trample | 
-			Command::Nomen   | Command::Summon                                                                                                                                          => args >= 1,
-			Command::Infuse  | Command::Transmute | Command::Tether                                                                                                                     => args >= 2,
+			Command::Summon  | Command::Dub                                                                                                                                             => args >= 1,
+			Command::Infuse  | Command::Transmute | Command::Tether  | Command::Nomen                                                                                                   => args >= 2,
 		}
 	}
 
@@ -120,7 +123,7 @@ impl Command {
 				Command::Biblio  | Command::Spot     | Command::Span     | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
 				Command::Newline | Command::Space    | Command::Tab      | Command::Blank    | Command::Mirror | Command::Atom     | Command::Scribe  | Command::Adieu     => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
-				Command::Summon                                                                                                                                            => return Ok(1),
+				Command::Summon  | Command::Dub                                                                                                                            => return Ok(1),
 				Command::Infuse                                                                                                                                            => return Ok(2),
 				Command::Peer                                                                                                                                              => return Ok(choose_mm(2, 1)),
 				Command::Transmute                                                                                                                                         => return Ok(choose_mm(3, 2)),

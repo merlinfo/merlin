@@ -43,12 +43,10 @@ impl Plane {
 
 	fn parse_atom(&mut self, atom: &str) -> Option<String> {
 		if let Some(stripped) = atom.strip_prefix(";") { // the atom is a command
-			let snl = strip_nl(stripped);
-
-			match self.parse_command(snl) {
+			match self.parse_command(stripped) {
 				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() },
 				Err(_)              => {
-					if let Some(i) = self.get_nomen(snl) {
+					if let Some(i) = self.get_nomen(stripped) {
 						let nomen = self.nomens.remove(i);
 						self.parse_line_atom(nomen.expand());
 						self.nomens.push(nomen);
@@ -75,12 +73,12 @@ impl Plane {
 			match t {
 				Text::Value(s)   => {
 					if self.print_result {
-						println!("{}", strip_nl(&s));
+						print!("{}", s);
 					} else {
 						self.push(s);
 					}
 				}
-				Text::Display(s) => println!("{}", strip_nl(&s)),
+				Text::Display(s) => print!("{}", s),
 			}
 		}
 
@@ -145,6 +143,7 @@ impl Plane {
 						Command::Trample   => cvol.trample(data.remove(0)),
 						Command::Transmute => cvol.transmute(Selection::new(&data[1..], cvol.len())?, data.remove(0)),
 						Command::Shave     => cvol.shave(parse_pos::<isize>(&data[0])?),
+						Command::Dub       => cvol.dub(data.remove(0))?,
 						_                  => (),
 					}
 				} else {
@@ -161,12 +160,4 @@ impl Plane {
 
 fn parse_pos<T: std::str::FromStr>(s: &str) -> Result<T, MerlinError> {
 	s.parse::<T>().or(Err(MerlinError::InvalidSyntax))
-}
-
-// remove first trailing newline
-
-fn strip_nl(input: &str) -> &str {
-	input.strip_suffix("\r\n")
-		.or(input.strip_suffix("\n"))
-		.unwrap_or(&input)
 }
