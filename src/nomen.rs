@@ -11,7 +11,7 @@ impl Nomen {
 	}
 
 	pub fn expand(&self) -> &str {
-		self.atoms.as_str()
+		&self.atoms
 	}
 }
 

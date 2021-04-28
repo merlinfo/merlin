@@ -1,10 +1,9 @@
-use crate::volume::Volume;
+use crate::{volume::Volume, nomen::Nomen};
 use std::fmt;
 
 mod commands;
 mod parse;
 mod input;
-mod nomen;
 
 // an enum that represents the various modes of merlin
 
@@ -26,10 +25,10 @@ impl fmt::Display for Vision {
 
 // a structure representing our enviroment or "plane"
 
-pub struct Plane<'a> {
+pub struct Plane {
 	stack: Vec<String>,
 
-	volumes: Vec<Volume<'a>>,
+	volumes: Vec<Volume>,
 	current_volume: usize,
 
 	highest_buff_index: usize, // detirmines how we should label new buffers
@@ -40,13 +39,13 @@ pub struct Plane<'a> {
 
 	running: bool,
 
-	nomens: Vec<nomen::Nomen>,
+	nomens: Vec<Nomen>,
 }
 
-impl<'a> Plane<'a> {
+impl Plane {
 	// create a new plane with no open volumes
  
-	pub fn new() -> Plane<'a> {
+	pub fn new() -> Plane {
 		Plane {
 			stack: Vec::new(),
 			volumes: Vec::new(),
@@ -73,10 +72,10 @@ impl<'a> Plane<'a> {
 
 	// get the index of a nomen
 
-	pub fn get_nomen(&self, name: &str) -> Option<(usize, &nomen::Nomen)> {
+	pub fn get_nomen(&self, name: &str) -> Option<usize> {
 		for (i, n) in self.nomens.iter().enumerate() {
 			if n == name {
-				return Some((i, n));
+				return Some(i);
 			}
 		}
 
@@ -88,6 +87,17 @@ impl<'a> Plane<'a> {
 	pub fn error(&self) {
 		if self.show_errors {
 			eprintln!("?");
+		}
+	}
+
+	// add a new volume
+
+	pub fn push_volume(&mut self, v: Volume) {
+		self.highest_buff_index += 1;
+		self.volumes.push(v);
+	
+		if self.volumes.len() > 1 {
+			self.current_volume += 1;
 		}
 	}
 }

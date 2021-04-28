@@ -46,6 +46,7 @@ pub enum Command {
 	Scribe,
 	Adieu,
 	Nomen,
+	Summon,
 }
 
 impl FromStr for Command {
@@ -83,6 +84,7 @@ impl FromStr for Command {
 			"scribe"    => Ok(Command::Scribe),
 			"adieu"     => Ok(Command::Adieu),
 			"nomen"     => Ok(Command::Nomen),
+			"summon"    => Ok(Command::Summon),
 			_           => Err(MerlinError::UnknownCommand),
 		}
 	}
@@ -96,7 +98,7 @@ impl Command {
 			Command::Genesis | Command::Biblio    | Command::Spot    | Command::Span   | Command::Molecule | Command::Pen    | Command::Orbit  | Command::Decay    | Command::Destroy | 
 			Command::Newline | Command::Space     | Command::Tab     | Command::Blank  | Command::Mirror   | Command::Atom   | Command::Scribe | Command::Adieu                         => true,
 			Command::Focus   | Command::Traverse  | Command::Appear  | Command::Shave  | Command::Shelve   | Command::Peer   | Command::Incant | Command::Inscribe | Command::Trample | 
-			Command::Nomen                                                                                                                                                              => args >= 1,
+			Command::Nomen   | Command::Summon                                                                                                                                          => args >= 1,
 			Command::Infuse  | Command::Transmute | Command::Tether                                                                                                                     => args >= 2,
 		}
 	}
@@ -117,7 +119,8 @@ impl Command {
 				Command::Tether  | Command::Nomen                                                                                                                          => return Ok(args),
 				Command::Biblio  | Command::Spot     | Command::Span     | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
 				Command::Newline | Command::Space    | Command::Tab      | Command::Blank    | Command::Mirror | Command::Atom     | Command::Scribe  | Command::Adieu     => return Ok(0),
-				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant    => return Ok(1),
+				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
+				Command::Summon                                                                                                                                            => return Ok(1),
 				Command::Infuse                                                                                                                                            => return Ok(2),
 				Command::Peer                                                                                                                                              => return Ok(choose_mm(2, 1)),
 				Command::Transmute                                                                                                                                         => return Ok(choose_mm(3, 2)),

@@ -3,7 +3,7 @@
 use crate::commands::MerlinError;
 use super::{Volume, selection::Selection};
 
-impl<'a> Volume<'a> {
+impl Volume {
 	// return the number of the current line
 
 	pub fn spot(&self) -> usize {
@@ -40,8 +40,8 @@ impl<'a> Volume<'a> {
 	// move to specific line
 
 	pub fn appear(&mut self, n: usize) -> Result<(), MerlinError> {
-		if n < self.buffer.len() {
-			self.line = n;
+		if n <= self.buffer.len() && n >= 1 {
+			self.line = n-1;
 		} else {
 			return Err(MerlinError::OutOfBounds)
 		}
@@ -60,7 +60,7 @@ impl<'a> Volume<'a> {
 
 	// inset some text into the buffer
 
-	pub fn inscribe(&mut self, s: &str) {
+	pub fn inscribe(&mut self, s: String) {
 		let mut lines = s.lines();
 
 		// push the first line to the end of the current lines
@@ -77,7 +77,7 @@ impl<'a> Volume<'a> {
 
 	// overwrite text
 
-	pub fn trample(&mut self, s: &str) {
+	pub fn trample(&mut self, s: String) {
 		for (i, line) in s.lines().enumerate() {
 			if i >= self.buffer.len() { // the length of the piece of text excedes the length of the buffer
 				self.buffer.push(line.to_string());
@@ -89,7 +89,7 @@ impl<'a> Volume<'a> {
 
 	// replace a part of the buffer
 
-	pub fn transmute(&mut self, part: Selection, replace: &str) {
+	pub fn transmute(&mut self, part: Selection, replace: String) {
 		match part {
 			Selection::One(l)    => self.insert_lines(l, replace),
 			Selection::Few(b, e) => {
@@ -122,7 +122,7 @@ impl<'a> Volume<'a> {
 
 	// remove a line with 1+ other lines
 
-	fn insert_lines(&mut self, index: usize, lines: &str) {
+	fn insert_lines(&mut self, index: usize, lines: String) {
 		self.buffer.remove(index);
 
 		for line in lines.lines() {

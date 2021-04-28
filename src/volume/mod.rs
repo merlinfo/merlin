@@ -3,15 +3,15 @@ use std::fmt;
 mod commands;
 pub mod selection;
 
-use std::{fs, path::Path};
+use std::{fs::File, path::Path, io::{BufRead, BufReader}};
 use crate::commands::MerlinError;
 
 // an enum representing the states of a volume buffer
 
-pub enum VolumeState<'a> {
+pub enum VolumeState {
 	// the volume is a file, with a path
 
-	File(&'a str),
+	File(String),
 
 	// the volume is an unamed buffer, with a numerical id
 
@@ -20,7 +20,7 @@ pub enum VolumeState<'a> {
 
 // now we can display the VolumeState enum
 
-impl<'a> fmt::Display for VolumeState<'a> {
+impl fmt::Display for VolumeState {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
 			VolumeState::File(n)    => write!(f, "{}", n),
@@ -31,15 +31,15 @@ impl<'a> fmt::Display for VolumeState<'a> {
 
 // a structure representing a document, or "volume"
 
-pub struct Volume<'a> {
-	pub name: VolumeState<'a>,
+pub struct Volume {
+	pub name: VolumeState,
 	buffer: Vec<String>,
 
 	line: usize,
 	pub written: bool,
 }
 
-impl<'a> Volume<'a> {
+impl Volume {
 	// return the length of the buffer
 
 	pub fn len(&self) -> usize {
@@ -48,11 +48,11 @@ impl<'a> Volume<'a> {
 
 	// create a buffer with some existing text
 
-	pub fn from_text(num: usize, contents: &str) -> Volume<'a> {
-		let mut buff = contents.lines().map(|s| s.to_string()).collect::<Vec<String>>();
+	pub fn from_text(num: usize, contents: String) -> Volume {
+		let mut buff = contents.lines().map(|s| s.to_owned()).collect::<Vec<String>>();
 		
 		if buff.len() == 0 {
-			buff = vec![String::from("")];
+			buff = vec![String::new()];
 		}
 
 		Volume {
@@ -63,19 +63,33 @@ impl<'a> Volume<'a> {
 		}
 	}
 
-	/*pub fn from_file(fpath: &str) -> Result<Volume<'a>, MerlinError> {
-		let mut buffer = vec![""];
-		let path = Path::new(fpath);
+	pub fn from_file(fpath: String) -> Result<Volume, MerlinError> {
+		let mut buff = Vec::new();
+		let path = Path::new(&fpath);
 		
 		if path.exists() {
-			match fs::read_to_string(fpath) {
-				Ok(data) => buffer = data.lines().map(|x| x.parse()).collect(),
+			match File::open(&fpath) {
+				Ok(file) => {
+					let reader = BufReader::new(file);
+
+					for line in reader.lines() {
+						buff.push(line.or(Err(MerlinError::ReadFailed))?);
+					}
+				},
 				Err(_)   => return Err(MerlinError::ReadFailed),
 			}
 		} else {
-			fs::File::create(path).or(Err(MerlinError::CreationFailed))?;
+			File::create(path).or(Err(MerlinError::CreationFailed))?;
+			buff.push(String::new());
 		}
-	}*/
+
+		Ok(Volume {
+			name: VolumeState::File(fpath),
+			buffer: buff,
+			line: 0,
+			written: true
+		})
+	}
 
 	// return a mutable reference to the current line
 
@@ -84,7 +98,7 @@ impl<'a> Volume<'a> {
 	}
 }
 
-impl<'a> fmt::Display for Volume<'a> {
+impl fmt::Display for Volume {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		let show_written = || {
 			if self.written {

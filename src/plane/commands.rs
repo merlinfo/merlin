@@ -1,9 +1,9 @@
 // commands relating to the plane structure 
 
-use super::{Plane, nomen::Nomen};
-use crate::{volume::Volume, commands::MerlinError};
+use super::Plane;
+use crate::{volume::Volume, commands::MerlinError, nomen::Nomen};
 
-impl<'a> Plane<'a> {
+impl Plane {
 	// list all of the open volumes
 
 	pub fn biblio(&self) -> String {
@@ -24,19 +24,14 @@ impl<'a> Plane<'a> {
 
 	// insert a buffer created from text
 
-	pub fn genesis(&mut self, text: &str) {
-		self.highest_buff_index += 1;
-		self.volumes.push(Volume::from_text(self.highest_buff_index, text));
-	
-		if self.volumes.len() > 1 {
-			self.current_volume += 1;
-		}
-
+	pub fn genesis(&mut self, text: String) {
+		self.push_volume(Volume::from_text(self.highest_buff_index, text));
 	}
 
 	// open a new file
 
-	pub fn summon(&mut self, path: &str) {
+	pub fn summon(&mut self, path: String) -> Result<(), MerlinError> {
+		Ok(self.push_volume(Volume::from_file(path)?))
 	}
 
 	// close a file / buffer
@@ -89,8 +84,11 @@ impl<'a> Plane<'a> {
 
 	// print the last atom in the stack
 
-	pub fn pen(&mut self) -> Option<&String> {
-		self.stack.last()
+	pub fn pen(&mut self) -> Option<&str> {
+		match self.stack.last() {
+			Some(s) => Some(s.as_str()),
+			None    => None,
+		}
 	}
 
 	// swap the last two items in the stack
@@ -119,7 +117,7 @@ impl<'a> Plane<'a> {
 	}
 	
 	pub fn nomen(&mut self, atoms: String, name: String) {
-		if let Some((i, _)) = self.get_nomen(&name) {
+		if let Some(i) = self.get_nomen(&name) {
 			self.nomens.remove(i);
 		}
 

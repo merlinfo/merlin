@@ -7,7 +7,7 @@ enum Text {
 	Display(String),
 }
 
-impl<'a> Plane<'a> {
+impl Plane {
 	// parse a line based on what mode the user is in
 
 	pub fn parse_line(&mut self, line: &str) {
@@ -46,12 +46,14 @@ impl<'a> Plane<'a> {
 			let snl = strip_nl(stripped);
 
 			match self.parse_command(snl) {
-				Ok((command, data)) => if self.run_and_handle(command, &data).is_err() { self.error() },
-				Err(_)              =>
-					match self.get_nomen(snl) {
-						Some((_, n)) => println!("SAD"),
-						None         => self.error()
+				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() },
+				Err(_)              => {
+					if let Some(i) = self.get_nomen(snl) {
+						let nomen = self.nomens.remove(i);
+						self.parse_line_atom(nomen.expand());
+						self.nomens.push(nomen);
 					}
+				}
 			}
 		} else {
 			let mut out = atom.to_string();
@@ -68,7 +70,7 @@ impl<'a> Plane<'a> {
 
 	// run and handle!!
 
-	fn run_and_handle(&mut self, command: Command, data: &Vec<String>) -> Result<(), MerlinError> {
+	fn run_and_handle(&mut self, command: Command, data: Vec<String>) -> Result<(), MerlinError> {
 		if let Some(t) = self.run_command(command, data)? {
 			match t {
 				Text::Value(s)   => {
@@ -102,12 +104,12 @@ impl<'a> Plane<'a> {
 
 	// run a single command with plain text arguments
 
-	fn run_command(&mut self, command: Command, data: &Vec<String>) -> Result<Option<Text>, MerlinError> {
+	fn run_command(&mut self, command: Command, mut data: Vec<String>) -> Result<Option<Text>, MerlinError> {
 		let oksome  = |t: Text  | Ok(Some(t));
 		let oksval  = |s: String| oksome(Text::Value(s));
 
 		match command { // check what command is being used
-			Command::Genesis                           => self.genesis(&data[0]),
+			Command::Genesis                           => if data.len() > 0 { self.genesis(data.remove(0)); } else { self.genesis(String::new()); },
 			Command::Biblio if self.volumes.len() > 0  => return oksome(Text::Display(self.biblio())),
 			Command::Incant                            => return oksval(commands::incant(&data[0])?),
 			Command::Infuse                            => return oksval(commands::infuse(&data[0], &data[1])?),
@@ -126,6 +128,7 @@ impl<'a> Plane<'a> {
 			Command::Mirror                            => self.print_result = !self.print_result,
 			Command::Adieu                             => self.running = false,
 			Command::Nomen                             => self.nomen(data[..data.len()-1].join(" "), data.last().unwrap().to_string()),
+			Command::Summon                            => self.summon(data.remove(0))?,
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume
@@ -137,10 +140,10 @@ impl<'a> Plane<'a> {
 						Command::Span      => return oksval(cvol.span().to_string()),
 						Command::Traverse  => cvol.traverse(parse_pos::<isize>(&data[0])?),
 						Command::Appear    => cvol.appear(parse_pos::<usize>(&data[0])?)?,
-						Command::Peer      => return oksval(cvol.peer(Selection::new(data, cvol.len())?)),
-						Command::Inscribe  => cvol.inscribe(&data[0]),
-						Command::Trample   => cvol.trample(&data[0]),
-						Command::Transmute => cvol.transmute(Selection::new(&data[1..], cvol.len())?, &data[0]),
+						Command::Peer      => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
+						Command::Inscribe  => cvol.inscribe(data.remove(0)),
+						Command::Trample   => cvol.trample(data.remove(0)),
+						Command::Transmute => cvol.transmute(Selection::new(&data[1..], cvol.len())?, data.remove(0)),
 						Command::Shave     => cvol.shave(parse_pos::<isize>(&data[0])?),
 						_                  => (),
 					}

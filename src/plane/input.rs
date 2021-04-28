@@ -1,7 +1,7 @@
 use super::Plane;
 use std::io::{self, Write};
 
-impl<'a> Plane<'a> {
+impl Plane {
 	pub fn repl(&mut self) {
 		let mut input = String::new();
 
