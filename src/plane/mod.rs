@@ -1,7 +1,7 @@
 use crate::{volume::Volume, nomen::Nomen};
 use std::fmt;
 
-mod commands;
+mod plane_commands;
 mod parse;
 mod input;
 
@@ -66,13 +66,13 @@ impl Plane {
 
 	// push a string to the stack
 
-	pub fn push(&mut self, item: String) {
+	fn push(&mut self, item: String) {
 		self.stack.push(item);
 	}
 
 	// get the index of a nomen
 
-	pub fn get_nomen(&self, name: &str) -> Option<usize> {
+	fn get_nomen(&self, name: &str) -> Option<usize> {
 		for (i, n) in self.nomens.iter().enumerate() {
 			if n == name {
 				return Some(i);
@@ -84,7 +84,7 @@ impl Plane {
 
 	// print an error if they are turned on
 
-	pub fn error(&self) {
+	fn error(&self) {
 		if self.show_errors {
 			eprintln!("?");
 		}
@@ -92,7 +92,7 @@ impl Plane {
 
 	// add a new volume
 
-	pub fn push_volume(&mut self, v: Volume) {
+	fn push_volume(&mut self, v: Volume) {
 		self.highest_buff_index += 1;
 		self.volumes.push(v);
 	

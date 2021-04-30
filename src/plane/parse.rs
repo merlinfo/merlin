@@ -138,6 +138,7 @@ impl Plane {
 				self.nomen(data, n);
 				}
 			Command::Summon                            => self.summon(data.remove(0))?,
+			Command::Spellbook                         => self.spellbook(&data[0])?,
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume

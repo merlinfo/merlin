@@ -1,6 +1,6 @@
 use std::fmt;
 
-mod commands;
+mod vol_commands;
 pub mod selection;
 
 use std::{fs::File, path::Path, io::{BufRead, BufReader}};

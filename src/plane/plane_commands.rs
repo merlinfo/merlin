@@ -1,6 +1,7 @@
 // commands relating to the plane structure 
 
 use super::Plane;
+use std::{fs::File, io::{BufRead, BufReader}};
 use crate::{volume::Volume, commands::MerlinError, nomen::Nomen};
 
 impl Plane {
@@ -128,5 +129,19 @@ impl Plane {
 
 	// read a file an parse its contents 
 
-	//spell
+	pub fn spellbook(&mut self, file_path: &str) -> Result<(), MerlinError> {
+		match File::open(file_path) {
+			Ok(file) => {
+				let reader = BufReader::new(file);
+
+				for line in reader.lines() {
+					self.parse_line(&line.or(Err(MerlinError::ReadFailed))?);
+				}
+
+				Ok(())
+			},
+			Err(_)   => return Err(MerlinError::ReadFailed),
+
+		}
+	}
 }

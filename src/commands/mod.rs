@@ -52,6 +52,7 @@ pub enum Command {
 	Summon,
 	Dub,
 	Carve,
+	Spellbook,
 }
 
 impl FromStr for Command {
@@ -92,6 +93,7 @@ impl FromStr for Command {
 			"summon"    => Ok(Command::Summon),
 			"dub"       => Ok(Command::Dub),
 			"carve"     => Ok(Command::Carve),
+			"spellbook" => Ok(Command::Spellbook),
 			_           => Err(MerlinError::UnknownCommand),
 		}
 	}
@@ -102,11 +104,11 @@ impl Command {
 
 	fn valid(&self, args: usize) -> bool {
 		match self {
-			Command::Genesis | Command::Biblio    | Command::Spot    | Command::Span   | Command::Molecule | Command::Pen    | Command::Orbit  | Command::Decay    | Command::Destroy | 
-			Command::Newline | Command::Space     | Command::Tab     | Command::Blank  | Command::Mirror   | Command::Atom   | Command::Scribe | Command::Adieu    | Command::Carve     => true,
-			Command::Focus   | Command::Traverse  | Command::Appear  | Command::Shave  | Command::Shelve   | Command::Peer   | Command::Incant | Command::Inscribe | Command::Trample | 
-			Command::Summon  | Command::Dub                                                                                                                                             => args >= 1,
-			Command::Infuse  | Command::Transmute | Command::Tether  | Command::Nomen                                                                                                   => args >= 2,
+			Command::Genesis | Command::Biblio    | Command::Spot      | Command::Span   | Command::Molecule | Command::Pen    | Command::Orbit  | Command::Decay    | Command::Destroy | 
+			Command::Newline | Command::Space     | Command::Tab       | Command::Blank  | Command::Mirror   | Command::Atom   | Command::Scribe | Command::Adieu    | Command::Carve     => true,
+			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve   | Command::Peer   | Command::Incant | Command::Inscribe | Command::Trample | 
+			Command::Summon  | Command::Dub       | Command::Spellbook                                                                                                                    => args >= 1,
+			Command::Infuse  | Command::Transmute | Command::Tether    | Command::Nomen                                                                                                   => args >= 2,
 		}
 	}
 
@@ -123,16 +125,16 @@ impl Command {
 			};
 
 			match self {
-				Command::Tether  | Command::Nomen                                                                                                                          => return Ok(args),
-				Command::Biblio  | Command::Spot     | Command::Span     | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
-				Command::Newline | Command::Space    | Command::Tab      | Command::Blank    | Command::Mirror | Command::Atom     | Command::Scribe  | Command::Adieu   |
-				Command::Carve                                                                                                                                             => return Ok(0),
-				Command::Focus   | Command::Traverse | Command::Appear   | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
-				Command::Summon  | Command::Dub                                                                                                                            => return Ok(1),
-				Command::Infuse                                                                                                                                            => return Ok(2),
-				Command::Peer                                                                                                                                              => return Ok(choose_mm(2, 1)),
-				Command::Transmute                                                                                                                                         => return Ok(choose_mm(3, 2)),
-				Command::Genesis                                                                                                                                           => return Ok(choose_mm(1, 0))
+				Command::Tether  | Command::Nomen                                                                                                                           => return Ok(args),
+				Command::Biblio  | Command::Spot     | Command::Span      | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
+				Command::Newline | Command::Space    | Command::Tab       | Command::Blank    | Command::Mirror | Command::Atom     | Command::Scribe  | Command::Adieu   |
+				Command::Carve                                                                                                                                              => return Ok(0),
+				Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
+				Command::Summon  | Command::Dub      | Command::Spellbook                                                                                                   => return Ok(1),
+				Command::Infuse                                                                                                                                             => return Ok(2),
+				Command::Peer                                                                                                                                               => return Ok(choose_mm(2, 1)),
+				Command::Transmute                                                                                                                                          => return Ok(choose_mm(3, 2)),
+				Command::Genesis                                                                                                                                            => return Ok(choose_mm(1, 0))
 			}
 		}
 
