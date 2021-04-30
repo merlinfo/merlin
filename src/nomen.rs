@@ -2,15 +2,15 @@ use std::cmp::PartialEq;
 
 pub struct Nomen {
 	name: String,
-	atoms: String,
+	atoms: Vec<String>,
 }
 
 impl Nomen {
-	pub fn new(n: String, a: String) -> Nomen {
+	pub fn new(n: String, a: Vec<String>) -> Nomen {
 		Nomen { name: n, atoms: a }
 	}
 
-	pub fn expand(&self) -> &str {
+	pub fn expand(&self) -> &Vec<String> {
 		&self.atoms
 	}
 }

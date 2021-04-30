@@ -118,7 +118,7 @@ impl Plane {
 	
 	// create a new nomen
 
-	pub fn nomen(&mut self, atoms: String, name: String) {
+	pub fn nomen(&mut self, atoms: Vec<String>, name: String) {
 		if let Some(i) = self.get_nomen(&name) {
 			self.nomens.remove(i);
 		}
@@ -128,5 +128,5 @@ impl Plane {
 
 	// read a file an parse its contents 
 
-	spell
+	//spell
 }

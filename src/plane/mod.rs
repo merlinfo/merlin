@@ -17,8 +17,8 @@ pub enum Vision {
 impl fmt::Display for Vision {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
-			Vision::Atom => write!(f, ", "),
-			Vision::Scribe => write!(f, ""),
+			Vision::Atom   => write!(f, ", "),
+			Vision::Scribe => write!(f, "* "),
 		}
 	}
 }

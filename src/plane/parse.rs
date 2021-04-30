@@ -49,7 +49,11 @@ impl Plane {
 					match self.get_nomen(stripped) {
 						Some(i) => {
 							let nomen = self.nomens.remove(i);
-							self.parse_line_atom(nomen.expand());
+							
+							for atom in nomen.expand() {
+								self.atom_push(atom);
+							}
+							
 							self.nomens.push(nomen);
 						} 
 						None    => self.error(),
@@ -128,7 +132,11 @@ impl Plane {
 			Command::Scribe                            => self.vision = Vision::Scribe,
 			Command::Mirror                            => self.print_result = !self.print_result,
 			Command::Adieu                             => self.running = false,
-			Command::Nomen                             => self.nomen(data[..data.len()-1].join(" "), data.last().unwrap().to_string()),
+			Command::Nomen                             => {
+				let n = data.pop().unwrap();
+
+				self.nomen(data, n);
+				}
 			Command::Summon                            => self.summon(data.remove(0))?,
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
