@@ -1,6 +1,7 @@
 // commands relating to the volume structure
 
-use std::path::Path;
+use std::{path::Path, fs::File};
+use std::io::Write;
 use crate::commands::MerlinError;
 use super::{Volume, VolumeState, selection::Selection};
 
@@ -124,17 +125,34 @@ impl Volume {
 	// "dub" a buffer
 
 	pub fn dub(&mut self, f_name: String) -> Result<(), MerlinError> {
+		let err = Err(MerlinError::FileAlreadyExists);
+
 		match self.name {
 			VolumeState::NoFile(_) => {
 				if Path::new(&f_name).exists() {
-					return Err(MerlinError::FileAlreadyExists)
+					return err
 				}
 
 				self.name = VolumeState::File(f_name);
 			
 				Ok(())
 			}
-			VolumeState::File(_) => Err(MerlinError::FileAlreadyExists),
+			VolumeState::File(_) => err,
+		}
+	}
+
+	// write out a file
+
+	pub fn carve(&mut self) -> Result<(), MerlinError> {
+		match &self.name {
+			VolumeState::File(name) => {
+				let mut file = File::create(&name).or(Err(MerlinError::CreationFailed))?;
+				file.write_all(&(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::WriteFailed))?;
+
+				self.set_written(true);
+				Ok(())
+			}
+			VolumeState::NoFile(_)  => Err(MerlinError::BufferNotNamed),
 		}
 	}
 

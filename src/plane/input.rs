@@ -16,9 +16,16 @@ impl Plane {
 				.read_line(&mut input)
 				.expect("merlin: unable to read line");
 
-			self.parse_line(&input);
+			
+			self.parse_line(strip_nl(&input));
 
 			input.clear();
 		}
 	} 
+}
+
+fn strip_nl(input: &str) -> &str {
+	input.strip_suffix("\r\n")
+		.or(input.strip_suffix("\n"))
+		.unwrap_or(&input)
 }

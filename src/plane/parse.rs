@@ -46,10 +46,13 @@ impl Plane {
 			match self.parse_command(stripped) {
 				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() },
 				Err(_)              => {
-					if let Some(i) = self.get_nomen(stripped) {
-						let nomen = self.nomens.remove(i);
-						self.parse_line_atom(nomen.expand());
-						self.nomens.push(nomen);
+					match self.get_nomen(stripped) {
+						Some(i) => {
+							let nomen = self.nomens.remove(i);
+							self.parse_line_atom(nomen.expand());
+							self.nomens.push(nomen);
+						} 
+						None    => self.error(),
 					}
 				}
 			}
@@ -140,8 +143,9 @@ impl Plane {
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?)?,
 						Command::Peer     => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
 						Command::Dub      => cvol.dub(data.remove(0))?,
+						Command::Carve    => cvol.carve()?,
 						_ => {
-							cvol.set_unsaved();
+							cvol.set_written(false);
 
 							match command {
 								Command::Inscribe  => cvol.inscribe(data.remove(0)),

@@ -46,10 +46,10 @@ impl Volume {
 		self.buffer.len()
 	}
 
-	// set written to false
+	// set written to a boolean value
 
-	pub fn set_unsaved(&mut self) {
-		self.written = false;
+	pub fn set_written(&mut self, w: bool) {
+		self.written = w;
 	}
 
 	// create a buffer with some existing text
