@@ -125,4 +125,8 @@ impl Plane {
 
 		self.nomens.push(Nomen::new(name, atoms))
 	}
+
+	// read a file an parse its contents 
+
+	spell
 }
