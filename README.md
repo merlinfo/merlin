@@ -1,7 +1,4 @@
-<pre>
 <h1 align="center">ᛗ ᛘ</h1>
-<h1 align="center">ᛘ ᛗ</h1>
-</pre>
 
 <p align="center"><u>An esoteric text editor for wizards</u></p>
 
