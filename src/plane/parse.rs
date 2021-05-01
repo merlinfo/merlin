@@ -11,9 +11,9 @@ impl Plane {
 	// parse a line based on what mode the user is in
 
 	pub fn parse_line(&mut self, line: &str) {
-		match self.vision {
-			Vision::Atom   => self.parse_line_atom(line),
-			Vision::Scribe => self.parse_line_scribe(line),
+		match &self.vision {
+			Vision::Atom    => self.parse_line_atom(line),
+			Vision::Scribe  => self.parse_line_scribe(line),
 		}
 	}
 
@@ -134,7 +134,6 @@ impl Plane {
 			Command::Adieu                             => self.running = false,
 			Command::Nomen                             => {
 				let n = data.pop().unwrap();
-
 				self.nomen(data, n);
 				}
 			Command::Summon                            => self.summon(data.remove(0))?,
@@ -148,7 +147,10 @@ impl Plane {
 						Command::Focus    => self.focus(parse_pos::<usize>(&data[0])?)?,
 						Command::Spot     => return oksval(cvol.spot().to_string()),
 						Command::Span     => return oksval(cvol.span().to_string()),
+						Command::Pin      => return oksval(cvol.pin().to_string()),
+						Command::Columns  => return oksval(cvol.columns().to_string()),
 						Command::Traverse => cvol.traverse(parse_pos::<isize>(&data[0])?),
+						Command::Shift    => cvol.shift(parse_pos::<isize>(&data[0])?),
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?)?,
 						Command::Peer     => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
 						Command::Dub      => cvol.dub(data.remove(0))?,

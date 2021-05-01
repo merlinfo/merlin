@@ -18,7 +18,7 @@ impl fmt::Display for Vision {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match self {
 			Vision::Atom   => write!(f, ", "),
-			Vision::Scribe => write!(f, "* "),
+			Vision::Scribe => write!(f, ""),
 		}
 	}
 }
@@ -45,7 +45,7 @@ pub struct Plane {
 impl Plane {
 	// create a new plane with no open volumes
  
-	pub fn new() -> Plane {
+	pub fn new(se: bool) -> Plane {
 		Plane {
 			stack: Vec::new(),
 			volumes: Vec::new(),
@@ -56,7 +56,7 @@ impl Plane {
 			vision: Vision::Atom,
 
 			print_result: false,
-			show_errors: true,
+			show_errors: se,
 
 			running: true,
 

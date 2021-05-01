@@ -1,5 +1,6 @@
 // commands relating to the volume structure
 
+use std::iter::FromIterator;
 use std::{path::Path, fs::File};
 use std::io::Write;
 use crate::commands::MerlinError;
@@ -17,26 +18,30 @@ impl Volume {
 	pub fn span(&self) -> usize {
 		self.buffer.len()
 	}
+
+	// return the cursor location
+
+	pub fn pin(&self) -> usize {
+		self.cursor + 1
+	}
+
+	// return the length of the line
+
+	pub fn columns(&self) -> usize {
+		self.buffer[self.line].chars().count()
+	}
 	
 	// move up or down a line
 
 	pub fn traverse(&mut self, n: isize) {
-		let len = self.buffer.len();
-		let mut edge = 0; // our "edge" is set to the beginning of the list by default
+		self.line = move_respect_bounds(self.line, self.buffer.len(), n);
+		self.cursor = 0;
+	}
 
-		// we are dealing with negative integers, so we must change our edge
+	// move left or right a character
 
-		if n < 0 {
-			edge = len-1;
-		}
-
-		let modified = (self.line as isize) + n;
-
-		if modified < len as isize && modified >= 0 {
-			self.line = modified as usize;
-		} else {
-			self.line = edge;
-		}
+	pub fn shift(&mut self, n: isize) {
+		self.cursor = move_respect_bounds(self.cursor, self.columns(), n);
 	}
 
 	// move to specific line
@@ -44,6 +49,7 @@ impl Volume {
 	pub fn appear(&mut self, n: usize) -> Result<(), MerlinError> {
 		if n <= self.buffer.len() && n >= 1 {
 			self.line = n-1;
+			self.cursor = 0;
 		} else {
 			return Err(MerlinError::OutOfBounds)
 		}
@@ -65,9 +71,15 @@ impl Volume {
 	pub fn inscribe(&mut self, s: String) {
 		let mut lines = s.lines();
 
-		// push the first line to the end of the current lines
+		// remove text after the cursor and push the first line to the end of the current line
 
+		let mut chars: Vec<char> = self.buffer[self.line].chars().collect();
+		let remainder = String::from_iter(chars.split_off(self.cursor));
+
+		self.buffer[self.line] = String::from_iter(chars);
 		self.current().push_str(lines.next().unwrap());
+
+		self.cursor += 1;
 
 		// loop through the remaining lines and intersplice them in the buffer
 
@@ -75,6 +87,9 @@ impl Volume {
 			self.line += 1;
 			self.buffer.insert(self.line, line.to_string());
 		}
+
+		self.cursor = self.columns()-1;
+		self.current().push_str(&remainder);
 	}
 
 	// overwrite text
@@ -108,18 +123,22 @@ impl Volume {
 
 	// shave off parts of text from a line
 
-	pub fn shave(&mut self, amount: isize) {
-		let chars = self.current().chars();
-		let len = chars.count();
-		let abs = amount.abs() as usize;
+	pub fn shave(&mut self, amount: usize) {
+		let to_remove = amount;
 
-		if abs >= len { // clear the line if the amount we want to remove is equal or greater than the length of the line
-			self.current().clear();
-		} else if amount > 0 { // remove from the end...
-			self.current().replace_range(len-abs.., "");
-		} else { // remove from the beginning
-			self.current().replace_range(..abs, "");
+		if self.cursor == 0 {
+			if self.line > 0 {
+				let old_line = self.buffer.remove(line);
+
+				self.line -= 1;
+				to_remove -= 1;
+
+				self.cursor = self.columns();
+				self.current().push_str(&old_line);
+			}
 		}
+
+		
 	}
 
 	// "dub" a buffer
@@ -165,4 +184,16 @@ impl Volume {
 			self.buffer.insert(index + 1, line.to_string());
 		}
 	}
+}
+
+fn move_respect_bounds(curr: usize, len: usize, n: isize) -> usize {
+	let modified = (curr as isize) + n;
+
+	if modified < len as isize && modified >= 0 {
+		return modified as usize
+	} else if n < 0 {
+		return 0
+	}
+
+	len-1
 }

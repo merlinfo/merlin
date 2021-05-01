@@ -36,6 +36,8 @@ pub struct Volume {
 	buffer: Vec<String>,
 
 	line: usize,
+	cursor: usize,
+
 	written: bool,
 }
 
@@ -65,6 +67,7 @@ impl Volume {
 			name: VolumeState::NoFile(num),
 			buffer: buff,
 			line: 0,
+			cursor: 0,
 			written: false
 		}
 	}
@@ -93,6 +96,7 @@ impl Volume {
 			name: VolumeState::File(fpath),
 			buffer: buff,
 			line: 0,
+			cursor: 0,
 			written: true
 		})
 	}
