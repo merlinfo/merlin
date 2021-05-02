@@ -49,12 +49,10 @@ impl Volume {
 	pub fn appear(&mut self, n: usize) -> Result<(), MerlinError> {
 		if n <= self.buffer.len() && n >= 1 {
 			self.line = n-1;
-			self.cursor = 0;
+			self.update_cursor();
 		} else {
 			return Err(MerlinError::OutOfBounds)
 		}
-
-		self.update_cursor();
 
 		Ok(())
 	}

@@ -60,7 +60,12 @@ impl Plane {
 
 			running: true,
 
-			nomens: Vec::new(),
+			nomens: vec![
+				Nomen::new(String::from("new"), vec![String::from("\n")]),
+				Nomen::new(String::from("tab"), vec![String::from("\t")]),
+				Nomen::new(String::from("space"), vec![String::from(" ")]),
+				Nomen::new(String::from("blank"), vec![String::from("")]),
+			],
 		}
 	}
 
