@@ -35,13 +35,13 @@ impl Volume {
 
 	pub fn traverse(&mut self, n: isize) {
 		self.line = move_respect_bounds(self.line, self.buffer.len(), n);
-		self.cursor = 0;
+		self.update_cursor()
 	}
 
 	// move left or right a character
 
 	pub fn shift(&mut self, n: isize) {
-		self.cursor = move_respect_bounds(self.cursor, self.columns(), n);
+		self.cursor = move_respect_bounds(self.cursor, self.columns()+1, n);
 	}
 
 	// move to specific line
@@ -53,6 +53,8 @@ impl Volume {
 		} else {
 			return Err(MerlinError::OutOfBounds)
 		}
+
+		self.update_cursor();
 
 		Ok(())
 	}
@@ -79,8 +81,6 @@ impl Volume {
 		self.buffer[self.line] = String::from_iter(chars);
 		self.current().push_str(lines.next().unwrap());
 
-		self.cursor += 1;
-
 		// loop through the remaining lines and intersplice them in the buffer
 
 		for line in lines {
@@ -88,7 +88,7 @@ impl Volume {
 			self.buffer.insert(self.line, line.to_string());
 		}
 
-		self.cursor = self.columns()-1;
+		self.cursor = self.columns();
 		self.current().push_str(&remainder);
 	}
 
@@ -102,43 +102,27 @@ impl Volume {
 				self.buffer[self.line+i] = line.to_string();
 			}
 		}
+
+		self.update_cursor();
 	}
 
-	// replace a part of the buffer
+	// clear the buffer
 
-	pub fn transmute(&mut self, part: Selection, replace: String) {
-		match part {
-			Selection::One(l)    => self.insert_lines(l, replace),
-			Selection::Few(b, e) => {
-				// remove the selected lines
+	pub fn burn(&mut self) {
+		self.cursor = 0;
+		self.line = 0;
 
-				for i in b+1..e {
-					self.buffer.remove(i);
-				}
-
-				self.insert_lines(b, replace);
-			}
-		}
+		self.buffer = vec![String::new()]
 	}
 
 	// shave off parts of text from a line
 
 	pub fn shave(&mut self, amount: usize) {
-		let to_remove = amount;
-
-		if self.cursor == 0 {
-			if self.line > 0 {
-				let old_line = self.buffer.remove(line);
-
-				self.line -= 1;
-				to_remove -= 1;
-
-				self.cursor = self.columns();
-				self.current().push_str(&old_line);
+		for _ in 0..amount {
+			if !self.backspace() {
+				break;
 			}
 		}
-
-		
 	}
 
 	// "dub" a buffer
@@ -175,13 +159,39 @@ impl Volume {
 		}
 	}
 
-	// remove a line with 1+ other lines
+	// remove a single character or line break
 
-	fn insert_lines(&mut self, index: usize, lines: String) {
-		self.buffer.remove(index);
+	fn backspace(&mut self) -> bool {
+		// return a 
 
-		for line in lines.lines() {
-			self.buffer.insert(index + 1, line.to_string());
+		if self.cursor == 0 {
+			if self.line > 0 {
+				let old_line = self.buffer.remove(self.line);
+
+				self.line -= 1;
+
+				self.cursor = self.columns();
+				self.current().push_str(&old_line);
+			} else {
+				return false;
+			}
+		} else {
+			let remainder = self.buffer[self.line].split_off(self.cursor);
+			
+			self.current().pop();
+			self.current().push_str(&remainder);
+
+			self.cursor -= 1;
+		}
+
+		true
+	}
+
+	fn update_cursor(&mut self) {
+		let len = self.columns();
+
+		if self.cursor > len {
+			self.cursor = len
 		}
 	}
 }

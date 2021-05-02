@@ -1,5 +1,5 @@
 /*
-	ᛗ ᛘ - Merlin
+	ᛗ ᛘ - Merliin
 */
 
 extern crate clap;

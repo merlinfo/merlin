@@ -35,7 +35,7 @@ pub enum Command {
 	Peer,
 	Inscribe,
 	Trample,
-	Transmute,
+	Burn,
 	Shave,
 	Molecule,
 	Pen,
@@ -79,7 +79,7 @@ impl FromStr for Command {
 			"peer"      => Ok(Command::Peer),
 			"inscribe"  => Ok(Command::Inscribe),
 			"trample"   => Ok(Command::Trample),
-			"transmute" => Ok(Command::Transmute),
+			"burn"      => Ok(Command::Burn),
 			"shave"     => Ok(Command::Shave),
 			"molecule"  => Ok(Command::Molecule),
 			"pen"       => Ok(Command::Pen),
@@ -112,10 +112,10 @@ impl Command {
 		match self {
 			Command::Genesis | Command::Biblio    | Command::Spot      | Command::Span   | Command::Pin      | Command::Columns | Command::Molecule | Command::Pen    | Command::Orbit   | 
 			Command::Decay   | Command::Destroy   | Command::Newline   | Command::Space  | Command::Tab      | Command::Blank   | Command::Mirror   | Command::Atom   | Command::Scribe  |
-			Command::Adieu   | Command::Carve                                                                                                                                              => true,
+			Command::Adieu   | Command::Carve     | Command::Burn                                                                                                                          => true,
 			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve   | Command::Peer    | Command::Incant | Command::Inscribe | Command::Trample | 
 			Command::Summon  | Command::Dub       | Command::Spellbook | Command::Shift                                                                                                    => args >= 1,
-			Command::Infuse  | Command::Transmute | Command::Tether    | Command::Nomen                                                                                                    => args >= 2,
+			Command::Infuse  | Command::Tether    | Command::Nomen                                                                                                                         => args >= 2,
 		}
 	}
 
@@ -135,12 +135,11 @@ impl Command {
 				Command::Tether  | Command::Nomen                                                                                                                           => return Ok(args),
 				Command::Biblio  | Command::Spot     | Command::Span      | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
 				Command::Newline | Command::Space    | Command::Tab       | Command::Blank    | Command::Mirror | Command::Atom     | Command::Scribe  | Command::Adieu   |
-				Command::Carve   | Command::Pin      | Command::Columns                                                                                                     => return Ok(0),
+				Command::Carve   | Command::Pin      | Command::Columns   | Command::Burn                                                                                   => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
 				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift                                                                                  => return Ok(1),
 				Command::Infuse                                                                                                                                             => return Ok(2),
 				Command::Peer                                                                                                                                               => return Ok(choose_mm(2, 1)),
-				Command::Transmute                                                                                                                                          => return Ok(choose_mm(3, 2)),
 				Command::Genesis                                                                                                                                            => return Ok(choose_mm(1, 0))
 			}
 		}
