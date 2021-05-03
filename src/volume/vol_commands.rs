@@ -46,15 +46,15 @@ impl Volume {
 
 	// move to specific line
 
-	pub fn appear(&mut self, n: usize) -> Result<(), MerlinError> {
-		if n <= self.buffer.len() && n >= 1 {
-			self.line = n-1;
-			self.update_cursor();
-		} else {
-			return Err(MerlinError::OutOfBounds)
-		}
+	pub fn appear(&mut self, n: usize) {
+		self.line = goto_respect_bounds(self.buffer.len(), n);
+		self.update_cursor();
+	}
 
-		Ok(())
+	// move to a certain character
+
+	pub fn infix(&mut self, n: usize) {
+		self.cursor = goto_respect_bounds(self.columns(), n);
 	}
 
 	// view a piece of text
@@ -204,4 +204,14 @@ fn move_respect_bounds(curr: usize, len: usize, n: isize) -> usize {
 	}
 
 	len-1
+}
+
+fn goto_respect_bounds(len: usize, n: usize) -> usize {
+	if n > len {
+		len
+	} else if n < 1 {
+		0
+	} else {
+		n-1
+	}
 }

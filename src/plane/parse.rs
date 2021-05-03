@@ -98,13 +98,7 @@ impl Plane {
 		let command = Command::from_str(name)?;
 		let needed = command.get_needed(self.stack.len())?;
 
-		let mut data = Vec::new();
-
-		for _ in (self.stack.len() - needed)..(self.stack.len()) {
-			data.insert(0, self.stack.pop().unwrap());
-		}
-
-		Ok((command, data))
+		Ok((command, self.stack.split_off(self.stack.len() - needed)))
 	}
 
 	// run a single command with plain text arguments
@@ -147,7 +141,8 @@ impl Plane {
 						Command::Columns  => return oksval(cvol.columns().to_string()),
 						Command::Traverse => cvol.traverse(parse_pos::<isize>(&data[0])?),
 						Command::Shift    => cvol.shift(parse_pos::<isize>(&data[0])?),
-						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?)?,
+						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?),
+						Command::Infix    => cvol.infix(parse_pos::<usize>(&data[0])?),
 						Command::Peer     => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
 						Command::Dub      => cvol.dub(data.remove(0))?,
 						Command::Carve    => cvol.carve()?,
