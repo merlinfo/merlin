@@ -4,7 +4,7 @@ use std::iter::FromIterator;
 use std::{path::Path, fs::File};
 use std::io::Write;
 use crate::commands::MerlinError;
-use super::{Volume, VolumeState, selection::Selection};
+use super::{Volume, VolumeState};
 
 impl Volume {
 	// return the number of the current line
@@ -59,10 +59,20 @@ impl Volume {
 
 	// view a piece of text
 
-	pub fn peer(&self, part: Selection) -> String {
-		match part {
-			Selection::One(i)    => self.buffer.get(i).unwrap().to_string(),
-			Selection::Few(b, e) => self.buffer.as_slice()[b..e].join("\n"),
+	pub fn peer(&self, b: usize, e: usize) -> Result<String, MerlinError> {
+		if b >= 1 && e <= self.buffer.len() && b < e {
+			Ok(self.buffer.as_slice()[b-1..e].join("\n"))
+		} else {
+			Err(MerlinError::OutOfBounds)
+		}
+	}
+
+	// view a single line
+
+	pub fn peek(&self, l: usize) -> Result<String, MerlinError> {
+		match self.buffer.get(l-1) {
+			Some(s) => Ok(s.to_owned()),
+			None    => Err(MerlinError::OutOfBounds),
 		}
 	}
 

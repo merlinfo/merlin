@@ -34,6 +34,7 @@ pub enum Command {
 	Appear,
 	Infix,
 	Peer,
+	Peek,
 	Inscribe,
 	Trample,
 	Burn,
@@ -75,6 +76,7 @@ impl FromStr for Command {
 			"appear"    => Ok(Command::Appear),
 			"infix"     => Ok(Command::Infix),
 			"peer"      => Ok(Command::Peer),
+			"peek"      => Ok(Command::Peek),
 			"inscribe"  => Ok(Command::Inscribe),
 			"trample"   => Ok(Command::Trample),
 			"burn"      => Ok(Command::Burn),
@@ -104,11 +106,11 @@ impl Command {
 
 	fn valid(&self, args: usize) -> bool {
 		match self {
-			Command::Genesis | Command::Biblio    | Command::Spot      | Command::Span   | Command::Pin    | Command::Columns | Command::Molecule | Command::Pen      | Command::Orbit   | 
-			Command::Decay   | Command::Destroy   | Command::Mirror    | Command::Atom   | Command::Scribe | Command::Adieu   | Command::Carve    | Command::Burn                          => true,
-			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve | Command::Peer    | Command::Incant   | Command::Inscribe | Command::Trample | 
-			Command::Summon  | Command::Dub       | Command::Spellbook | Command::Shift  | Command::Infix                                                                                  => args >= 1,
-			Command::Infuse  | Command::Tether    | Command::Nomen                                                                                                                         => args >= 2,
+			Command::Genesis | Command::Biblio    | Command::Spot      | Command::Span   | Command::Pin    | Command::Columns | Command::Molecule | Command::Pen     | Command::Orbit   | 
+			Command::Decay   | Command::Destroy   | Command::Mirror    | Command::Atom   | Command::Scribe | Command::Adieu   | Command::Carve    | Command::Burn                         => true,
+			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve | Command::Incant  | Command::Inscribe | Command::Trample | Command::Peek    |
+			Command::Summon  | Command::Dub       | Command::Spellbook | Command::Shift  | Command::Infix                                                                                 => args >= 1,
+			Command::Infuse  | Command::Tether    | Command::Nomen     | Command::Peer                                                                                                    => args >= 2,
 		}
 	}
 
@@ -129,9 +131,8 @@ impl Command {
 				Command::Biblio  | Command::Spot     | Command::Span      | Command::Molecule | Command::Pen    | Command::Orbit    | Command::Decay   | Command::Destroy |
 				Command::Mirror  | Command::Atom     | Command::Scribe    | Command::Adieu    | Command::Carve  | Command::Pin      | Command::Columns | Command::Burn      => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
-				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix                                                              => return Ok(1),
-				Command::Infuse                                                                                                                                             => return Ok(2),
-				Command::Peer                                                                                                                                               => return Ok(choose_mm(2, 1)),
+				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Peek                                             => return Ok(1),
+				Command::Infuse  | Command::Peer                                                                                                                            => return Ok(2),
 				Command::Genesis                                                                                                                                            => return Ok(choose_mm(1, 0))
 			}
 		}

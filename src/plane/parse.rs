@@ -1,6 +1,6 @@
 use super::{Plane, Vision};
 use std::str::FromStr;
-use crate::{volume::selection::Selection, commands::{commands, MerlinError, Command}};
+use crate::commands::{commands, MerlinError, Command};
 
 enum Text {
 	Value(String),
@@ -143,7 +143,8 @@ impl Plane {
 						Command::Shift    => cvol.shift(parse_pos::<isize>(&data[0])?),
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?),
 						Command::Infix    => cvol.infix(parse_pos::<usize>(&data[0])?),
-						Command::Peer     => return oksval(cvol.peer(Selection::new(&data, cvol.len())?)),
+						Command::Peer     => return oksval(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?),
+						Command::Peek     => return oksval(cvol.peek(parse_pos::<usize>(&data[0])?)?),
 						Command::Dub      => cvol.dub(data.remove(0))?,
 						Command::Carve    => cvol.carve()?,
 						_ => {

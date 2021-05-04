@@ -1,7 +1,6 @@
 use std::fmt;
 
 mod vol_commands;
-pub mod selection;
 
 use std::{fs::File, path::Path, io::{BufRead, BufReader}};
 use crate::commands::MerlinError;
@@ -42,12 +41,6 @@ pub struct Volume {
 }
 
 impl Volume {
-	// return the length of the buffer
-
-	pub fn len(&self) -> usize {
-		self.buffer.len()
-	}
-
 	// set written to a boolean value
 
 	pub fn set_written(&mut self, w: bool) {
