@@ -73,7 +73,7 @@ impl Volume {
 
 		// remove text after the cursor and push the first line to the end of the current line
 
-		let mut chars: Vec<char> = self.buffer[self.line].chars().collect();
+		let mut chars = self.curr_into_chars();
 		let remainder = String::from_iter(chars.split_off(self.cursor));
 
 		self.buffer[self.line] = String::from_iter(chars);
@@ -174,9 +174,12 @@ impl Volume {
 				return false;
 			}
 		} else {
-			let remainder = self.buffer[self.line].split_off(self.cursor);
+			let mut chars = self.curr_into_chars();
+			let remainder = String::from_iter(chars.split_off(self.cursor));
 			
-			self.current().pop();
+			chars.pop();
+			self.buffer[self.line] = String::from_iter(chars); 
+
 			self.current().push_str(&remainder);
 
 			self.cursor -= 1;
@@ -191,6 +194,10 @@ impl Volume {
 		if self.cursor > len {
 			self.cursor = len
 		}
+	}
+
+	fn curr_into_chars(&self) -> Vec<char> {
+		self.buffer[self.line].chars().collect()
 	}
 }
 
