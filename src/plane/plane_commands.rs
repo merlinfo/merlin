@@ -7,18 +7,16 @@ use crate::{volume::Volume, commands::MerlinError, nomen::Nomen};
 impl Plane {
 	// list all of the open volumes
 
-	pub fn biblio(&self) -> String {
-		let mut output = String::from("");
-
+	pub fn biblio(&self) {
 		for (i, v) in self.volumes.iter().enumerate() {
 			if i == self.current_volume {
-				output.push_str("> ");
+				print!("> ");
+			} else {
+				print!("  ");
 			}
 
-			output.push_str(&format!("{}\n", v));
+			println!("{}", v);
 		}
-
-		output
 	}
 
 	// insert a buffer created from text
@@ -67,28 +65,21 @@ impl Plane {
 
 	// display a list of the items in the stack
 
-	pub fn molecule(&mut self) -> Option<String> {
-		let mut output = String::new();
+	pub fn molecule(&mut self) {
+		if !&self.stack.is_empty() {
+			for item in &self.stack {
+				print!("{} ", item);
+			}
 
-		for item in &self.stack {
-			output.push_str(&(item.to_owned() + " "));
+			print!("\n");
 		}
-
-		if output.is_empty() {
-			return None;
-		}
-
-		output.push_str("\n");
-
-		Some(output)
 	}
 
 	// print the last atom in the stack
 
-	pub fn pen(&mut self) -> Option<&str> {
-		match self.stack.last() {
-			Some(s) => Some(s.as_str()),
-			None    => None,
+	pub fn pen(&mut self) {
+		if let Some(s) =  self.stack.last() {
+			print!("{}", s);
 		}
 	}
 
@@ -140,7 +131,7 @@ impl Plane {
 
 				Ok(())
 			},
-			Err(_)   => return Err(MerlinError::ReadFailed),
+			Err(_)   => Err(MerlinError::ReadFailed),
 
 		}
 	}

@@ -2,11 +2,6 @@ use super::{Plane, Vision};
 use std::str::FromStr;
 use crate::commands::{commands, MerlinError, Command};
 
-enum Text {
-	Value(String),
-	Display(String),
-}
-
 impl Plane {
 	// parse a line based on what mode the user is in
 
@@ -77,15 +72,10 @@ impl Plane {
 
 	fn run_and_handle(&mut self, command: Command, data: Vec<String>) -> Result<(), MerlinError> {
 		if let Some(t) = self.run_command(command, data)? {
-			match t {
-				Text::Value(s)   => {
-					if self.print_result {
-						print!("{}", s);
-					} else {
-						self.push(s);
-					}
-				}
-				Text::Display(s) => print!("{}", s),
+			if self.print_result {
+				print!("{}", t);
+			} else {
+				self.push(t);
 			}
 		}
 
@@ -103,21 +93,20 @@ impl Plane {
 
 	// run a single command with plain text arguments
 
-	fn run_command(&mut self, command: Command, mut data: Vec<String>) -> Result<Option<Text>, MerlinError> {
-		let oksome  = |t: Text  | Ok(Some(t));
-		let oksval  = |s: String| oksome(Text::Value(s));
+	fn run_command(&mut self, command: Command, mut data: Vec<String>) -> Result<Option<String>, MerlinError> {
+		let oksome  = |t: String| Ok(Some(t));
 
 		match command { // check what command is being used
 			Command::Genesis                           => if data.len() > 0 { self.genesis(data.remove(0)); } else { self.genesis(String::new()); },
-			Command::Biblio if self.volumes.len() > 0  => return oksome(Text::Display(self.biblio())),
-			Command::Incant                            => return oksval(commands::incant(&data[0])?),
-			Command::Infuse                            => return oksval(commands::infuse(&data[0], &data[1])?),
-			Command::Molecule                          => if let Some(s) = self.molecule() { return oksome(Text::Display(s));             },
-			Command::Pen                               => if let Some(s) = self.pen()      { return oksome(Text::Display(s.to_string())); },
+			Command::Biblio                            => self.biblio(),
+			Command::Incant                            => return oksome(commands::incant(&data[0])?),
+			Command::Infuse                            => return oksome(commands::infuse(&data[0], &data[1])?),
+			Command::Molecule                          => self.molecule(),
+			Command::Pen                               => self.pen(),
 			Command::Orbit                             => self.orbit()?,
 			Command::Decay                             => self.decay(),
 			Command::Destroy                           => self.destroy(),
-			Command::Tether                            => return oksval(commands::tether(&data[..data.len()-1], &data.last().unwrap())),
+			Command::Tether                            => return oksome(commands::tether(&data[..data.len()-1], &data.last().unwrap())),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
 			Command::Mirror                            => self.print_result = !self.print_result,
@@ -135,16 +124,16 @@ impl Plane {
 					match command {
 						Command::Shelve   => self.shelve(parse_pos::<usize>(&data[0])?)?,
 						Command::Focus    => self.focus(parse_pos::<usize>(&data[0])?)?,
-						Command::Spot     => return oksval(cvol.spot().to_string()),
-						Command::Span     => return oksval(cvol.span().to_string()),
-						Command::Pin      => return oksval(cvol.pin().to_string()),
-						Command::Columns  => return oksval(cvol.columns().to_string()),
+						Command::Spot     => return oksome(cvol.spot().to_string()),
+						Command::Span     => return oksome(cvol.span().to_string()),
+						Command::Pin      => return oksome(cvol.pin().to_string()),
+						Command::Columns  => return oksome(cvol.columns().to_string()),
 						Command::Traverse => cvol.traverse(parse_pos::<isize>(&data[0])?),
 						Command::Shift    => cvol.shift(parse_pos::<isize>(&data[0])?),
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?),
 						Command::Infix    => cvol.infix(parse_pos::<usize>(&data[0])?),
-						Command::Peer     => return oksval(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?),
-						Command::Peek     => return oksval(cvol.peek(parse_pos::<usize>(&data[0])?)?),
+						Command::Peer     => return oksome(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?),
+						Command::Peek     => return oksome(cvol.peek(parse_pos::<usize>(&data[0])?)?),
 						Command::Dub      => cvol.dub(data.remove(0))?,
 						Command::Carve    => cvol.carve()?,
 						_ => {

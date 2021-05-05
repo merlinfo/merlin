@@ -67,8 +67,10 @@ impl Volume {
 
 	pub fn from_file(fpath: String) -> Result<Volume, MerlinError> {
 		let mut buff = Vec::new();
+		let mut w = true;
+
 		let path = Path::new(&fpath);
-		
+
 		if path.exists() {
 			match File::open(&fpath) {
 				Ok(file) => {
@@ -81,8 +83,8 @@ impl Volume {
 				Err(_)   => return Err(MerlinError::ReadFailed),
 			}
 		} else {
-			File::create(path).or(Err(MerlinError::CreationFailed))?;
 			buff.push(String::new());
+			w = false;
 		}
 
 		Ok(Volume {
@@ -90,7 +92,7 @@ impl Volume {
 			buffer: buff,
 			line: 0,
 			cursor: 0,
-			written: true
+			written: w
 		})
 	}
 
