@@ -88,7 +88,7 @@ impl Plane {
 		let command = Command::from_str(name)?;
 		let needed = command.get_needed(self.stack.len())?;
 
-		Ok((command, self.stack.split_off(self.stack.len() - needed)))
+		Ok((command, self.stack.grab(needed)))
 	}
 
 	// run a single command with plain text arguments
@@ -101,11 +101,11 @@ impl Plane {
 			Command::Biblio                            => self.biblio(),
 			Command::Incant                            => return oksome(commands::incant(&data[0])?),
 			Command::Infuse                            => return oksome(commands::infuse(&data[0], &data[1])?),
-			Command::Molecule                          => self.molecule(),
-			Command::Pen                               => self.pen(),
-			Command::Orbit                             => self.orbit()?,
-			Command::Decay                             => self.decay(),
-			Command::Destroy                           => self.destroy(),
+			Command::Molecule                          => self.stack.molecule(),
+			Command::Pen                               => self.stack.pen(),
+			Command::Orbit                             => self.stack.orbit()?,
+			Command::Decay                             => self.stack.decay(),
+			Command::Destroy                           => self.stack.destroy(),
 			Command::Tether                            => return oksome(commands::tether(&data[..data.len()-1], &data.last().unwrap())),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,

@@ -7,6 +7,7 @@ use clap::{Arg, App};
 
 mod plane;
 mod volume;
+mod stack;
 mod commands;
 mod nomen;
 

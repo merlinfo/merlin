@@ -1,4 +1,4 @@
-use crate::{volume::Volume, nomen::Nomen};
+use crate::{volume::Volume, nomen::Nomen, stack::Stack};
 use std::fmt;
 
 mod plane_commands;
@@ -26,7 +26,7 @@ impl fmt::Display for Vision {
 // a structure representing our enviroment or "plane"
 
 pub struct Plane {
-	stack: Vec<String>,
+	stack: Stack,
 
 	volumes: Vec<Volume>,
 	current_volume: usize,
@@ -47,7 +47,7 @@ impl Plane {
  
 	pub fn new(se: bool) -> Plane {
 		Plane {
-			stack: Vec::new(),
+			stack: Stack::new(),
 			volumes: Vec::new(),
 
 			current_volume: 0,
