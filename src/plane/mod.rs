@@ -65,6 +65,8 @@ impl Plane {
 				Nomen::new(String::from("tab"), vec![String::from("\t")]),
 				Nomen::new(String::from("space"), vec![String::from(" ")]),
 				Nomen::new(String::from("blank"), vec![String::from("")]),
+			
+				Nomen::new(String::from("scribe-notation"), Vec::new())
 			],
 		}
 	}

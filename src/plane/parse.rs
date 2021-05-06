@@ -15,7 +15,9 @@ impl Plane {
 	// scribe mode
 
 	fn parse_line_scribe(&mut self, line: &str) {
-		self.atom_push(line);
+		if self.atom_push(line) {
+			self.parse_atom(";scribe-notation");
+		}
 	}
 
 	// atom mode
@@ -28,9 +30,16 @@ impl Plane {
 
 	// parse and atom and push it to the stack
 
-	fn atom_push(&mut self, atom: &str) {
-		if let Some(a) = self.parse_atom(atom) {
-			self.push(a);
+	fn atom_push(&mut self, atom: &str) -> bool {
+		// return true if we are pushing to the stack
+
+		match self.parse_atom(atom) {
+			Some(a) => {
+				self.push(a);
+
+				true
+			}
+			None    => false
 		}
 	}
 
@@ -98,7 +107,7 @@ impl Plane {
 
 		match command { // check what command is being used
 			Command::Genesis                           => if data.len() > 0 { self.genesis(data.remove(0)); } else { self.genesis(String::new()); },
-			Command::Biblio                            => self.biblio(),
+			Command::Spine                             => return oksome(self.spine(parse_pos::<usize>(&data[0])?)?),
 			Command::Incant                            => return oksome(commands::incant(&data[0])?),
 			Command::Infuse                            => return oksome(commands::infuse(&data[0], &data[1])?),
 			Command::Molecule                          => self.stack.molecule(),
@@ -117,6 +126,7 @@ impl Plane {
 				}
 			Command::Summon                            => self.summon(data.remove(0))?,
 			Command::Spellbook                         => self.spellbook(&data[0])?,
+			Command::Volumes                           => return oksome(self.volumes.len().to_string()),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume
@@ -124,6 +134,7 @@ impl Plane {
 					match command {
 						Command::Shelve   => self.shelve(parse_pos::<usize>(&data[0])?)?,
 						Command::Focus    => self.focus(parse_pos::<usize>(&data[0])?)?,
+						Command::Volume   => return oksome((self.current_volume + 1).to_string()),
 						Command::Spot     => return oksome(cvol.spot().to_string()),
 						Command::Span     => return oksome(cvol.span().to_string()),
 						Command::Pin      => return oksome(cvol.pin().to_string()),
@@ -136,6 +147,7 @@ impl Plane {
 						Command::Peek     => return oksome(cvol.peek(parse_pos::<usize>(&data[0])?)?),
 						Command::Dub      => cvol.dub(data.remove(0))?,
 						Command::Carve    => cvol.carve()?,
+						Command::Carved   => return oksome(cvol.carved()),
 						_ => {
 							cvol.set_written(false);
 

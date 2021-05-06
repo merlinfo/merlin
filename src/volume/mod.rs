@@ -105,14 +105,6 @@ impl Volume {
 
 impl fmt::Display for Volume {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		let show_written = || {
-			if self.written {
-				return ""
-			}
-
-			"."
-		};
-
-		write!(f, "{} {}", self.name, show_written())
+		write!(f, "{}", self.name)
 	}
 }

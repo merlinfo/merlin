@@ -5,17 +5,12 @@ use std::{fs::File, io::{BufRead, BufReader}};
 use crate::{volume::Volume, commands::MerlinError, nomen::Nomen};
 
 impl Plane {
-	// list all of the open volumes
+	// return the name of a volume
 
-	pub fn biblio(&self) {
-		for (i, v) in self.volumes.iter().enumerate() {
-			if i == self.current_volume {
-				print!("> ");
-			} else {
-				print!("  ");
-			}
-
-			println!("{}", v);
+	pub fn spine(&self, index: usize) -> Result<String, MerlinError> {
+		match self.volumes.get(index - 1) {
+			Some(v) => Ok(format!("{}", v)),
+			None    => Err(MerlinError::OutOfBounds),
 		}
 	}
 

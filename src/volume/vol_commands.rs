@@ -79,25 +79,27 @@ impl Volume {
 	// inset some text into the buffer
 
 	pub fn inscribe(&mut self, s: String) {
-		let mut lines = s.lines();
+		if !s.is_empty() {
+			let mut lines = s.lines();
 
-		// remove text after the cursor and push the first line to the end of the current line
+			// remove text after the cursor and push the first line to the end of the current line
 
-		let mut chars = self.curr_into_chars();
-		let remainder = String::from_iter(chars.split_off(self.cursor));
+			let mut chars = self.curr_into_chars();
+			let remainder = String::from_iter(chars.split_off(self.cursor));
 
-		self.buffer[self.line] = String::from_iter(chars);
-		self.current().push_str(lines.next().unwrap());
+			self.buffer[self.line] = String::from_iter(chars);
+			self.current().push_str(lines.next().unwrap());
 
-		// loop through the remaining lines and intersplice them in the buffer
+			// loop through the remaining lines and intersplice them in the buffer
 
-		for line in lines {
-			self.line += 1;
-			self.buffer.insert(self.line, line.to_string());
+			for line in lines {
+				self.line += 1;
+				self.buffer.insert(self.line, line.to_string());
+			}
+
+			self.cursor = self.columns();
+			self.current().push_str(&remainder);
 		}
-
-		self.cursor = self.columns();
-		self.current().push_str(&remainder);
 	}
 
 	// overwrite text
@@ -164,6 +166,14 @@ impl Volume {
 				Ok(())
 			}
 			VolumeState::NoFile(_)  => Err(MerlinError::BufferNotNamed),
+		}
+	}
+
+	pub fn carved(&self) -> String {
+		if self.written {
+			String::from(".")
+		} else {
+			String::from("!")
 		}
 	}
 
