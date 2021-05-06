@@ -1,5 +1,4 @@
 use crate::{volume::Volume, nomen::Nomen, stack::Stack};
-use std::fmt;
 
 mod plane_commands;
 mod parse;
@@ -10,17 +9,6 @@ mod input;
 pub enum Vision {
 	Atom,
 	Scribe,
-}
-
-// display the vision
-
-impl fmt::Display for Vision {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		match self {
-			Vision::Atom   => write!(f, ", "),
-			Vision::Scribe => write!(f, ""),
-		}
-	}
 }
 
 // a structure representing our enviroment or "plane"
@@ -66,7 +54,10 @@ impl Plane {
 				Nomen::new(String::from("space"), vec![String::from(" ")]),
 				Nomen::new(String::from("blank"), vec![String::from("")]),
 			
-				Nomen::new(String::from("scribe-notation"), Vec::new())
+				Nomen::new(String::from("scribe-notation"), Vec::new()),
+			
+				Nomen::new(String::from("atom-prompt"), vec![", ".to_string(), ";pen".to_string(), ";decay".to_string()]),
+				Nomen::new(String::from("scribe-prompt"), Vec::new()),
 			],
 		}
 	}
@@ -107,4 +98,5 @@ impl Plane {
 			self.current_volume += 1;
 		}
 	}
+	
 }

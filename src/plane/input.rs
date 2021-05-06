@@ -1,4 +1,4 @@
-use super::Plane;
+use super::{Plane, Vision};
 use std::io::{self, Write};
 
 impl Plane {
@@ -6,7 +6,10 @@ impl Plane {
 		let mut input = String::new();
 
 		while self.running {
-			print!("{}", self.vision);
+			match self.vision {
+				Vision::Atom   => self.parse_atom(";atom-prompt"),
+				Vision::Scribe => self.parse_atom(";scribe-prompt"),
+			};
 
 			std::io::stdout()
 				.flush()
