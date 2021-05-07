@@ -15,7 +15,9 @@ impl Plane {
 	// scribe mode
 
 	fn parse_line_scribe(&mut self, line: &str) {
-		if self.atom_push(line) {
+		self.atom_push(line);
+		
+		if line != ";atom" {
 			self.parse_atom(";scribe-notation");
 		}
 	}
@@ -30,16 +32,9 @@ impl Plane {
 
 	// parse and atom and push it to the stack
 
-	fn atom_push(&mut self, atom: &str) -> bool {
-		// return true if we are pushing to the stack
-
-		match self.parse_atom(atom) {
-			Some(a) => {
-				self.push(a);
-
-				true
-			}
-			None    => false
+	fn atom_push(&mut self, atom: &str) {
+		if let Some(a) = self.parse_atom(atom) {
+			self.push(a);
 		}
 	}
 
