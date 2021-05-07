@@ -171,7 +171,7 @@ impl Volume {
 
 	pub fn carved(&self) -> String {
 		if self.written {
-			String::from(".")
+			String::from("")
 		} else {
 			String::from("!")
 		}
