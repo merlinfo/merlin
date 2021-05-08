@@ -60,7 +60,7 @@ impl Volume {
 	// view a piece of text
 
 	pub fn peer(&self, b: usize, e: usize) -> Result<String, MerlinError> {
-		if b >= 1 && e <= self.buffer.len() && b < e {
+		if b >= 1 && e <= self.buffer.len() && b <= e {
 			Ok(self.buffer.as_slice()[b-1..e].join("\n"))
 		} else {
 			Err(MerlinError::OutOfBounds)
