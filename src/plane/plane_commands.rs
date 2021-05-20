@@ -1,5 +1,7 @@
 // commands relating to the plane structure 
 
+extern crate shellexpand;
+
 use super::Plane;
 use std::{fs::File, io::{BufRead, BufReader}};
 use crate::{volume::Volume, commands::MerlinError, nomen::Nomen};
@@ -23,7 +25,7 @@ impl Plane {
 	// open a new file
 
 	pub fn summon(&mut self, path: String) -> Result<(), MerlinError> {
-		Ok(self.push_volume(Volume::from_file(path)?))
+		Ok(self.push_volume(Volume::from_file(shellexpand::tilde(&path).to_string())?))
 	}
 
 	// close a file / buffer
@@ -71,7 +73,7 @@ impl Plane {
 	// read a file an parse its contents 
 
 	pub fn spellbook(&mut self, file_path: &str) -> Result<(), MerlinError> {
-		match File::open(file_path) {
+		match File::open(&shellexpand::tilde(file_path).to_string()) {
 			Ok(file) => {
 				let reader = BufReader::new(file);
 
