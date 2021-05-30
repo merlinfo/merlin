@@ -126,6 +126,7 @@ impl Plane {
 				}
 			Command::Summon                            => self.summon(data.remove(0))?,
 			Command::Spellbook                         => self.spellbook(&data[0])?,
+			Command::Volume                            => return oksome(self.volume().to_string()),
 			Command::Volumes                           => return oksome(self.volumes.len().to_string()),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
@@ -134,7 +135,6 @@ impl Plane {
 					match command {
 						Command::Shelve   => self.shelve(parse_pos::<usize>(&data[0])?)?,
 						Command::Focus    => self.focus(parse_pos::<usize>(&data[0])?)?,
-						Command::Volume   => return oksome((self.current_volume + 1).to_string()),
 						Command::Spot     => return oksome(cvol.spot().to_string()),
 						Command::Span     => return oksome(cvol.span().to_string()),
 						Command::Pin      => return oksome(cvol.pin().to_string()),
@@ -161,7 +161,19 @@ impl Plane {
 						}
 					}
 				} else {
-					return Err(MerlinError::NoVolumes)
+					let n = match command {
+						Command::Spot    => 0,
+						Command::Span    => 0,
+						Command::Pin     => 0,
+						Command::Columns => 0,
+						_                => 1,
+					};
+
+					if n == 0 {
+						return oksome("0".to_string());
+					}
+					
+					return Err(MerlinError::NoVolumes);
 				}
 			}
 		}

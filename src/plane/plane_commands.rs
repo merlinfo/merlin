@@ -87,4 +87,14 @@ impl Plane {
 
 		}
 	}
+
+	// return the index of the current volume, 0 if none are present
+
+	pub fn volume(&self) -> usize {
+		if self.volumes.len() == 0 {
+			0
+		} else {
+			self.volumes.len() + 1
+		}
+	}
 }
