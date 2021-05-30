@@ -105,11 +105,15 @@ impl Volume {
 	// overwrite text
 
 	pub fn trample(&mut self, s: String) {
-		for (i, line) in s.lines().enumerate() {
-			if i >= self.buffer.len() { // the length of the piece of text excedes the length of the buffer
-				self.buffer.push(line.to_string());
-			} else {
-				self.buffer[self.line+i] = line.to_string();
+		if s.is_empty() {
+			self.buffer[self.line] = s;
+		} else {
+			for (i, line) in s.lines().enumerate() {
+				if self.line + i >= self.buffer.len() { // the length of the piece of text excedes the length of the buffer
+					self.buffer.push(line.to_string());
+				} else {
+					self.buffer[self.line+i] = line.to_string();
+				}
 			}
 		}
 
