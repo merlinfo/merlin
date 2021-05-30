@@ -94,7 +94,7 @@ impl Plane {
 		if self.volumes.len() == 0 {
 			0
 		} else {
-			self.volumes.len() + 1
+			self.current_volume + 1
 		}
 	}
 }
