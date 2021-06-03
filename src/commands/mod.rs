@@ -48,6 +48,7 @@ pub enum Command {
 	Decay,
 	Destroy,
 	Tether,
+	Fray,
 	Mirror,
 	Atom,
 	Scribe,
@@ -93,6 +94,7 @@ impl FromStr for Command {
 			"decay"     => Ok(Command::Decay),
 			"destroy"   => Ok(Command::Destroy),
 			"tether"    => Ok(Command::Tether),
+			"fray"      => Ok(Command::Fray),
 			"mirror"    => Ok(Command::Mirror),
 			"atom"      => Ok(Command::Atom),
 			"scribe"    => Ok(Command::Scribe),
@@ -117,7 +119,7 @@ impl Command {
 			Command::Volumes | Command::Carved                                                                                                                                             => true,
 			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve  | Command::Incant   | Command::Inscribe | Command::Trample | Command::Peek   |
 			Command::Summon  | Command::Dub       | Command::Spellbook | Command::Shift  | Command::Infix   | Command::Spine    | Command::Nomen                                           => args >= 1,
-			Command::Infuse  | Command::Tether    | Command::Peer                                                                                                                          => args >= 2,
+			Command::Infuse  | Command::Tether    | Command::Fray      | Command::Peer                                                                                                     => args >= 2,
 		}
 	}
 
@@ -140,7 +142,7 @@ impl Command {
 				Command::Volumes | Command::Carved                                                                                                                          => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
 				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Peek     | Command::Spine                        => return Ok(1),
-				Command::Infuse  | Command::Peer                                                                                                                            => return Ok(2),
+				Command::Infuse  | Command::Peer     | Command::Fray                                                                                                        => return Ok(2),
 				Command::Genesis                                                                                                                                            => return Ok(choose_mm(1, 0))
 			}
 		}

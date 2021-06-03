@@ -116,6 +116,7 @@ impl Plane {
 			Command::Decay                             => self.stack.decay(),
 			Command::Destroy                           => self.stack.destroy(),
 			Command::Tether                            => return oksome(commands::tether(&data[..data.len()-1], &data.last().unwrap())),
+			Command::Fray                              => self.fray(&data[data.len()-2], &data.last().unwrap()),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
 			Command::Mirror                            => self.print_result = !self.print_result,

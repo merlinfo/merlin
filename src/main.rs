@@ -14,7 +14,7 @@ mod nomen;
 fn main() {
 	let merlin_args = App::new("merlin:")
 		.about("An esoteric, programmable text editor")
-		.version("1.0.1")
+		.version("1.0.2")
 		.arg(Arg::with_name("no-errors")
 			.short("n")
 			.long("no-errors")
