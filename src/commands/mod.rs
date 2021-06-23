@@ -37,7 +37,6 @@ pub enum Command {
 	Appear,
 	Infix,
 	Peer,
-	Peek,
 	Inscribe,
 	Trample,
 	Burn,
@@ -83,7 +82,6 @@ impl FromStr for Command {
 			"appear"    => Ok(Command::Appear),
 			"infix"     => Ok(Command::Infix),
 			"peer"      => Ok(Command::Peer),
-			"peek"      => Ok(Command::Peek),
 			"inscribe"  => Ok(Command::Inscribe),
 			"trample"   => Ok(Command::Trample),
 			"burn"      => Ok(Command::Burn),
@@ -117,8 +115,8 @@ impl Command {
 			Command::Genesis | Command::Spot      | Command::Span      | Command::Pin    | Command::Columns | Command::Molecule | Command::Pen      | Command::Orbit   | 
 			Command::Decay   | Command::Destroy   | Command::Mirror    | Command::Atom   | Command::Scribe  | Command::Adieu    | Command::Carve    | Command::Burn    | Command::Volume |
 			Command::Volumes | Command::Carved                                                                                                                                             => true,
-			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve  | Command::Incant   | Command::Inscribe | Command::Trample | Command::Peek   |
-			Command::Summon  | Command::Dub       | Command::Spellbook | Command::Shift  | Command::Infix   | Command::Spine    | Command::Nomen                                           => args >= 1,
+			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve  | Command::Incant   | Command::Inscribe | Command::Trample | Command::Summon |
+			Command::Dub     | Command::Spellbook | Command::Shift     | Command::Infix  | Command::Spine   | Command::Nomen                                                               => args >= 1,
 			Command::Infuse  | Command::Tether    | Command::Fray      | Command::Peer                                                                                                     => args >= 2,
 		}
 	}
@@ -141,7 +139,7 @@ impl Command {
 				Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume  |
 				Command::Volumes | Command::Carved                                                                                                                          => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
-				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Peek     | Command::Spine                        => return Ok(1),
+				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine                                            => return Ok(1),
 				Command::Infuse  | Command::Peer     | Command::Fray                                                                                                        => return Ok(2),
 				Command::Genesis                                                                                                                                            => return Ok(choose_mm(1, 0))
 			}

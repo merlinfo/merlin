@@ -67,15 +67,6 @@ impl Volume {
 		}
 	}
 
-	// view a single line
-
-	pub fn peek(&self, l: usize) -> Result<String, MerlinError> {
-		match self.buffer.get(l-1) {
-			Some(s) => Ok(s.to_owned()),
-			None    => Err(MerlinError::OutOfBounds),
-		}
-	}
-
 	// inset some text into the buffer
 
 	pub fn inscribe(&mut self, s: String) {

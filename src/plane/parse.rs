@@ -145,7 +145,6 @@ impl Plane {
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?),
 						Command::Infix    => cvol.infix(parse_pos::<usize>(&data[0])?),
 						Command::Peer     => return oksome(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?),
-						Command::Peek     => return oksome(cvol.peek(parse_pos::<usize>(&data[0])?)?),
 						Command::Dub      => cvol.dub(data.remove(0))?,
 						Command::Carve    => cvol.carve()?,
 						Command::Carved   => return oksome(cvol.carved()),
