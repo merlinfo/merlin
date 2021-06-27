@@ -1,6 +1,6 @@
 [package]
 name = "merlin"
-version = "1.0.3"
+version = "1.0.4"
 authors = ["geremachek <mrender2005@gmail.com>"]
 edition = "2018"
 

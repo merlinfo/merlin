@@ -53,6 +53,7 @@ pub enum Command {
 	Scribe,
 	Adieu,
 	Nomen,
+	Merlin,
 	Summon,
 	Dub,
 	Carve,
@@ -98,6 +99,7 @@ impl FromStr for Command {
 			"scribe"    => Ok(Command::Scribe),
 			"adieu"     => Ok(Command::Adieu),
 			"nomen"     => Ok(Command::Nomen),
+			"merlin"    => Ok(Command::Merlin),
 			"summon"    => Ok(Command::Summon),
 			"dub"       => Ok(Command::Dub),
 			"carve"     => Ok(Command::Carve),
@@ -116,7 +118,7 @@ impl Command {
 			Command::Decay   | Command::Destroy   | Command::Mirror    | Command::Atom   | Command::Scribe  | Command::Adieu    | Command::Carve    | Command::Burn    | Command::Volume |
 			Command::Volumes | Command::Carved                                                                                                                                             => true,
 			Command::Focus   | Command::Traverse  | Command::Appear    | Command::Shave  | Command::Shelve  | Command::Incant   | Command::Inscribe | Command::Trample | Command::Summon |
-			Command::Dub     | Command::Spellbook | Command::Shift     | Command::Infix  | Command::Spine   | Command::Nomen                                                               => args >= 1,
+			Command::Dub     | Command::Spellbook | Command::Shift     | Command::Infix  | Command::Spine   | Command::Nomen    | Command::Merlin                                          => args >= 1,
 			Command::Infuse  | Command::Tether    | Command::Fray      | Command::Peer                                                                                                     => args >= 2,
 		}
 	}
@@ -139,7 +141,7 @@ impl Command {
 				Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume  |
 				Command::Volumes | Command::Carved                                                                                                                          => return Ok(0),
 				Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant  | 
-				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine                                            => return Ok(1),
+				Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin                       => return Ok(1),
 				Command::Infuse  | Command::Peer     | Command::Fray                                                                                                        => return Ok(2),
 				Command::Genesis                                                                                                                                            => return Ok(choose_mm(1, 0))
 			}

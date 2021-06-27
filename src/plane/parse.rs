@@ -125,6 +125,7 @@ impl Plane {
 				let n = data.pop().unwrap();
 				self.nomen(data, n);
 				}
+			Command::Merlin                            => self.parse_line_atom(&data[0]),
 			Command::Summon                            => self.summon(data.remove(0))?,
 			Command::Spellbook                         => self.spellbook(&data[0])?,
 			Command::Volume                            => return oksome(self.volume().to_string()),
