@@ -7,7 +7,7 @@ use crate::commands::MerlinError;
 
 // an enum representing the states of a volume buffer
 
-pub enum VolumeState {
+enum VolumeState {
 	// the volume is a file, with a path
 
 	File(String),
