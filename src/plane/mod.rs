@@ -6,7 +6,7 @@ mod input;
 
 // an enum that represents the various modes of merlin
 
-pub enum Vision {
+enum Vision {
 	Atom,
 	Scribe,
 }
