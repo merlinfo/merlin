@@ -153,8 +153,8 @@ impl Plane {
 							cvol.set_written(false);
 
 							match command {
-								Command::Inscribe => cvol.inscribe(data.remove(0)),
-								Command::Trample  => cvol.trample(data.remove(0)),
+								Command::Inscribe => cvol.inscribe(&data[0]),
+								Command::Trample  => cvol.trample(&data[0]),
 								Command::Burn     => cvol.burn(),
 								Command::Shave    => cvol.shave(parse_pos::<usize>(&data[0])?),
 								_                 => (),

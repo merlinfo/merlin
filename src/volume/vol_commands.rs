@@ -69,7 +69,7 @@ impl Volume {
 
 	// inset some text into the buffer
 
-	pub fn inscribe(&mut self, s: String) {
+	pub fn inscribe(&mut self, s: &str) {
 		if !s.is_empty() {
 			let mut lines = s.lines();
 
@@ -95,9 +95,9 @@ impl Volume {
 
 	// overwrite text
 
-	pub fn trample(&mut self, s: String) {
+	pub fn trample(&mut self, s: &str) {
 		if s.is_empty() {
-			self.buffer[self.line] = s;
+			self.buffer[self.line].clear();
 		} else {
 			for (i, line) in s.lines().enumerate() {
 				if self.line + i >= self.buffer.len() { // the length of the piece of text excedes the length of the buffer
