@@ -4,7 +4,7 @@ use std::iter::FromIterator;
 use std::{path::Path, fs::File};
 use std::io::Write;
 use crate::commands::MerlinError;
-use super::{Volume, VolumeState};
+use super::Volume;
 
 impl Volume {
 	// return the number of the current line
@@ -132,20 +132,22 @@ impl Volume {
 
 	// "dub" a buffer
 
-	pub fn dub(&mut self, f_name: String) -> Result<(), MerlinError> {
+	pub fn dub(&mut self, f_name: &str) -> Result<(), MerlinError> {
 		let err = Err(MerlinError::FileAlreadyExists);
 
 		match self.name {
-			VolumeState::NoFile(_) => {
-				if Path::new(&f_name).exists() {
+			None    => {
+				let path = Path::new(f_name);
+
+				if path.exists() {
 					return err
 				}
 
-				self.name = VolumeState::File(f_name);
-			
+				self.name = Some(path.to_path_buf());
+
 				Ok(())
 			}
-			VolumeState::File(_) => err,
+			Some(_) => err,
 		}
 	}
 
@@ -153,14 +155,14 @@ impl Volume {
 
 	pub fn carve(&mut self) -> Result<(), MerlinError> {
 		match &self.name {
-			VolumeState::File(name) => {
+			Some(name) => {
 				let mut file = File::create(&name).or(Err(MerlinError::CreationFailed))?;
 				file.write_all(&(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::WriteFailed))?;
 
 				self.set_written(true);
 				Ok(())
 			}
-			VolumeState::NoFile(_)  => Err(MerlinError::BufferNotNamed),
+			None       => Err(MerlinError::BufferNotNamed),
 		}
 	}
 

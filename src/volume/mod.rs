@@ -2,36 +2,15 @@ use std::fmt;
 
 mod vol_commands;
 
-use std::{fs::File, path::Path, io::{BufRead, BufReader}};
+use std::fs::File;
+use std::path::{Path, PathBuf};
+use std::io::{BufRead, BufReader};
 use crate::commands::MerlinError;
-
-// an enum representing the states of a volume buffer
-
-enum VolumeState {
-	// the volume is a file, with a path
-
-	File(String),
-
-	// the volume is an unamed buffer, with a numerical id
-
-	NoFile(usize),
-}
-
-// now we can display the VolumeState enum
-
-impl fmt::Display for VolumeState {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		match self {
-			VolumeState::File(n)    => write!(f, "{}", n),
-			VolumeState::NoFile(n)  => write!(f, "*buffer {}*", n+1),
-		}
-	}
-}
 
 // a structure representing a document, or "volume"
 
 pub struct Volume {
-	name: VolumeState,
+	name: Option<PathBuf>,
 	buffer: Vec<String>,
 
 	line: usize,
@@ -49,7 +28,7 @@ impl Volume {
 
 	// create a buffer with some existing text
 
-	pub fn from_text(num: usize, contents: String) -> Volume {
+	pub fn from_text(contents: String) -> Volume {
 		let mut buff = contents.lines().map(|s| s.to_owned()).collect::<Vec<String>>();
 		
 		if buff.len() == 0 {
@@ -57,7 +36,7 @@ impl Volume {
 		}
 
 		Volume {
-			name: VolumeState::NoFile(num),
+			name: None,
 			buffer: buff,
 			line: 0,
 			cursor: 0,
@@ -65,14 +44,14 @@ impl Volume {
 		}
 	}
 
-	pub fn from_file(fpath: String) -> Result<Volume, MerlinError> {
+	pub fn from_file(fpath: &str) -> Result<Volume, MerlinError> {
 		let mut buff = Vec::new();
 		let mut w = true;
 
-		let path = Path::new(&fpath);
+		let path = Path::new(fpath);
 
 		if path.exists() {
-			match File::open(&fpath) {
+			match File::open(fpath) {
 				Ok(file) => {
 					let reader = BufReader::new(file);
 
@@ -88,7 +67,7 @@ impl Volume {
 		}
 
 		Ok(Volume {
-			name: VolumeState::File(fpath),
+			name: Some(path.to_path_buf()),
 			buffer: buff,
 			line: 0,
 			cursor: 0,
@@ -105,6 +84,9 @@ impl Volume {
 
 impl fmt::Display for Volume {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		write!(f, "{}", self.name)
+		match &self.name {
+			Some(p) => write!(f, "{}", p.display()),
+			&None    => write!(f, "*volume*"),
+		}
 	}
 }

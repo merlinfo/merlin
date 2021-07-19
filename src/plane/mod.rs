@@ -19,8 +19,6 @@ pub struct Plane {
 	volumes: Vec<Volume>,
 	current_volume: usize,
 
-	highest_buff_index: usize, // detirmines how we should label new buffers
-
 	vision: Vision, // current vision
 	print_result: bool,
 	show_errors: bool,
@@ -39,7 +37,6 @@ impl Plane {
 			volumes: Vec::new(),
 
 			current_volume: 0,
-			highest_buff_index: 0,
 
 			vision: Vision::Atom,
 
@@ -91,7 +88,6 @@ impl Plane {
 	// add a new volume
 
 	fn push_volume(&mut self, v: Volume) {
-		self.highest_buff_index += 1;
 		self.volumes.push(v);
 	
 		if self.volumes.len() > 1 {

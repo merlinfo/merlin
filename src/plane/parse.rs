@@ -126,7 +126,7 @@ impl Plane {
 				self.nomen(data, n);
 				}
 			Command::Merlin                            => self.parse_line_atom(&data[0]),
-			Command::Summon                            => self.summon(data.remove(0))?,
+			Command::Summon                            => self.summon(&data[0])?,
 			Command::Spellbook                         => self.spellbook(&data[0])?,
 			Command::Volume                            => return oksome(self.volume().to_string()),
 			Command::Volumes                           => return oksome(self.volumes.len().to_string()),
@@ -146,7 +146,7 @@ impl Plane {
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?),
 						Command::Infix    => cvol.infix(parse_pos::<usize>(&data[0])?),
 						Command::Peer     => return oksome(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?),
-						Command::Dub      => cvol.dub(data.remove(0))?,
+						Command::Dub      => cvol.dub(&data[0])?,
 						Command::Carve    => cvol.carve()?,
 						Command::Carved   => return oksome(cvol.carved()),
 						_ => {

@@ -19,13 +19,13 @@ impl Plane {
 	// insert a buffer created from text
 
 	pub fn genesis(&mut self, text: String) {
-		self.push_volume(Volume::from_text(self.highest_buff_index, text));
+		self.push_volume(Volume::from_text(text));
 	}
 
 	// open a new file
 
-	pub fn summon(&mut self, path: String) -> Result<(), MerlinError> {
-		Ok(self.push_volume(Volume::from_file(shellexpand::tilde(&path).to_string())?))
+	pub fn summon(&mut self, path: &str) -> Result<(), MerlinError> {
+		Ok(self.push_volume(Volume::from_file(&shellexpand::tilde(&path))?))
 	}
 
 	// close a file / buffer
@@ -91,10 +91,10 @@ impl Plane {
 	// return the index of the current volume, 0 if none are present
 
 	pub fn volume(&self) -> usize {
-        match self.volumes.len() {
-            0 => 0,
-            _ => self.current_volume + 1,
-        }
+        	match self.volumes.len() {
+	            0 => 0,
+	            _ => self.current_volume + 1,
+	        }
 	}
 
 	// split atom by another atom
