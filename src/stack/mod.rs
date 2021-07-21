@@ -50,12 +50,13 @@ impl Stack {
 	// swap the last two items in the stack
 
 	pub fn orbit(&mut self) -> Result<(), MerlinError> {
-		if self.stack.len() < 2 {
+		let len = self.len();
+
+		if len < 2 {
 			return Err(MerlinError::OutOfBounds);
 		}
 
-		let new_last = self.stack.remove(self.stack.len() - 2);
-		self.push(new_last);
+		self.stack.swap(len-2, len-1);
 
 		Ok(())
 	}

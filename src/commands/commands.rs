@@ -1,6 +1,9 @@
 // assorted commands...
 
+//extern crate shellexpand;
+
 use std::process::{Command, Stdio};
+//use std::env;
 use super::MerlinError;
 use std::io::{Write, Read};
 
@@ -8,9 +11,12 @@ use std::io::{Write, Read};
 
 pub fn incant(script: &str) -> Result<String, MerlinError> {
 	let args = script.split_whitespace().collect::<Vec<&str>>();
+	//let enviroment = env::vars_os().collect::<HashMap>()
 
 	let command = Command::new(&args[0])
 		.args(&args[1..])
+		//.envs(enviroment)
+		//.stdin(Stdio::piped())
 		.stdout(Stdio::piped())
 		.spawn()
 		.or(Err(MerlinError::InvalidExternal))?;
@@ -33,13 +39,16 @@ pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
 		.or(Err(MerlinError::InvalidExternal))?;
 	
 	command.stdin
-		.ok_or_else(|| MerlinError::InvalidExternal)? // stdin is not captured
+		.ok_or(MerlinError::InvalidExternal)? // stdin is not captured
 		.write_all(input.as_bytes())
 		.or(Err(MerlinError::InvalidExternal))?; // can't send data to stdin
 
 	let mut s = String::new();
-	command.stdout.unwrap().read_to_string(&mut s)
-		.or(Err(MerlinError::InvalidExternal))?;
+
+	command.stdout
+		.ok_or(MerlinError::InvalidExternal)? // stdout is not captured
+		.read_to_string(&mut s)
+		.or(Err(MerlinError::InvalidExternal))?; // can't read datwa
 
 	Ok(s)
 }
