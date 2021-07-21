@@ -3,7 +3,7 @@
 */
 
 extern crate clap;
-use clap::{Arg, App};
+use clap::{Arg, App, crate_version};
 
 mod plane;
 mod volume;
@@ -14,7 +14,7 @@ mod nomen;
 fn main() {
 	let merlin_args = App::new("merlin:")
 		.about("An esoteric, programmable text editor")
-		.version("1.0.4")
+		.version(crate_version!())
 		.arg(Arg::with_name("no-errors")
 			.short("n")
 			.long("no-errors")
