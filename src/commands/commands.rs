@@ -20,7 +20,7 @@ pub fn incant(script: &str) -> Result<String, MerlinError> {
 // send text to an external command
 
 pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
-	let command = make_command(script, Stdio::inherit())?;
+	let command = make_command(script, Stdio::piped())?;
 
 	command.stdin
 		.ok_or(MerlinError::InvalidExternal)? // stdin is not captured
@@ -42,6 +42,8 @@ pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
 pub fn tether(elems: &[String], teth: &str) -> String {
 	elems.join(teth)
 }
+
+// "make" a command from arguments, changing how it deals with io
 
 fn make_command(script: &str, sio: Stdio) -> Result<Child, MerlinError> {
 	let args = script.split_whitespace().collect::<Vec<&str>>();
