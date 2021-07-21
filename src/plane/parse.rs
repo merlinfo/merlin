@@ -107,7 +107,7 @@ impl Plane {
 
 		match command { // check what command is being used
 			Command::Genesis                           => if data.len() > 0 { self.genesis(data.remove(0)); } else { self.genesis(String::new()); },
-			Command::Spine                             => return oksome(self.spine(parse_pos::<usize>(&data[0])?)?),
+			Command::Spine                             => return oksome(self.spine(parse_pos::<usize>(dslice[0])?)?),
 			Command::Incant                            => return oksome(commands::incant(&data[0])?),
 			Command::Infuse                            => return oksome(commands::infuse(&data[0], &data[1])?),
 			Command::Molecule                          => self.stack.molecule(),

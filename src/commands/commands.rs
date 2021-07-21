@@ -2,7 +2,7 @@
 
 //extern crate shellexpand;
 
-use std::process::{Command, Stdio};
+use std::process::{Command, Child, Stdio};
 //use std::env;
 use super::MerlinError;
 use std::io::{Write, Read};
@@ -10,16 +10,7 @@ use std::io::{Write, Read};
 // run an external command and capture its output
 
 pub fn incant(script: &str) -> Result<String, MerlinError> {
-	let args = script.split_whitespace().collect::<Vec<&str>>();
-	//let enviroment = env::vars_os().collect::<HashMap>()
-
-	let command = Command::new(&args[0])
-		.args(&args[1..])
-		//.envs(enviroment)
-		//.stdin(Stdio::piped())
-		.stdout(Stdio::piped())
-		.spawn()
-		.or(Err(MerlinError::InvalidExternal))?;
+	let command = make_command(script, Stdio::inherit())?;
 
 	String::from_utf8(command.wait_with_output()
 		.or(Err(MerlinError::InvalidExternal))?.stdout)
@@ -29,15 +20,8 @@ pub fn incant(script: &str) -> Result<String, MerlinError> {
 // send text to an external command
 
 pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
-	let args = script.split_whitespace().collect::<Vec<&str>>();
+	let command = make_command(script, Stdio::inherit())?;
 
-	let command = Command::new(&args[0])
-		.args(&args[1..])
-		.stdin(Stdio::piped())
-		.stdout(Stdio::piped())
-		.spawn()
-		.or(Err(MerlinError::InvalidExternal))?;
-	
 	command.stdin
 		.ok_or(MerlinError::InvalidExternal)? // stdin is not captured
 		.write_all(input.as_bytes())
@@ -57,4 +41,15 @@ pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
 
 pub fn tether(elems: &[String], teth: &str) -> String {
 	elems.join(teth)
+}
+
+fn make_command(script: &str, sio: Stdio) -> Result<Child, MerlinError> {
+	let args = script.split_whitespace().collect::<Vec<&str>>();
+
+	Command::new(&args[0])
+		.args(&args[1..])
+		.stdin(sio)
+		.stdout(Stdio::piped())
+		.spawn()
+		.or(Err(MerlinError::InvalidExternal))
 }
