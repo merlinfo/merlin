@@ -3,7 +3,7 @@
 //extern crate shellexpand;
 
 use std::process::{Command, Child, Stdio};
-//use std::env;
+use std::env;
 use super::MerlinError;
 use std::io::{Write, Read};
 
@@ -50,6 +50,7 @@ fn make_command(script: &str, sio: Stdio) -> Result<Child, MerlinError> {
 
 	Command::new(&args[0])
 		.args(&args[1..])
+		.envs(env::vars_os())
 		.stdin(sio)
 		.stdout(Stdio::piped())
 		.spawn()
