@@ -48,13 +48,15 @@ impl Plane {
 	pub fn parse_atom(&mut self, atom: &str) -> Option<String> {
 		if let Some(stripped) = atom.strip_prefix(";") { // the atom is a command
 			match self.parse_command(stripped) {
-				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() },
-				Err(_)              => {
-					match self.get_nomen(stripped) {
+				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() }, // run and handle the command
+				Err(_)              => { // the command isn't valid...
+					match self.get_nomen(stripped) { // check if it is a nomen
 						Some(i) => {
 							let nomen = self.nomens.remove(i);
 							
-							for atom in nomen.expand() {
+							// parse each atom in the nomen
+
+							for atom in &nomen.atoms {
 								self.atom_push(atom);
 							}
 							
@@ -65,7 +67,11 @@ impl Plane {
 				}
 			}
 		} else {
+			// add the text to the stack...
+
 			let mut out = atom.to_string();
+
+			// remove leading '\'
 
 			if let Some(stripped) = atom.strip_prefix("\\") {
 				out = stripped.to_string();
@@ -81,6 +87,8 @@ impl Plane {
 
 	fn run_and_handle(&mut self, command: Command, data: Vec<String>) -> Result<(), MerlinError> {
 		if let Some(t) = self.run_command(command, data)? {
+			// print or push...
+
 			if self.print_result {
 				print!("{}", t);
 			} else {
@@ -149,7 +157,7 @@ impl Plane {
 						Command::Dub      => cvol.dub(&data[0])?,
 						Command::Carve    => cvol.carve()?,
 						Command::Carved   => return oksome(cvol.carved()),
-						_ => {
+						_ => { // we are modifying the buffer...
 							cvol.set_written(false);
 
 							match command {
@@ -161,7 +169,7 @@ impl Plane {
 							}
 						}
 					}
-				} else {
+				} else { // allow index commands to work when no buffers are open
 					let n = match command {
 						Command::Spot    => 0,
 						Command::Span    => 0,

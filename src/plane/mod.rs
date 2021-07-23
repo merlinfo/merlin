@@ -45,6 +45,8 @@ impl Plane {
 
 			running: true,
 
+			// built in nomens
+
 			nomens: vec![
 				Nomen::new(String::from("new"), vec![String::from("\n")]),
 				Nomen::new(String::from("tab"), vec![String::from("\t")]),
@@ -53,6 +55,8 @@ impl Plane {
 			
 				Nomen::new(String::from("scribe-notation"), Vec::new()),
 			
+				// our prompts
+
 				Nomen::new(String::from("atom-prompt"), vec![", ".to_string(), ";pen".to_string(), ";decay".to_string()]),
 				Nomen::new(String::from("scribe-prompt"), Vec::new()),
 			],
@@ -90,6 +94,8 @@ impl Plane {
 	fn push_volume(&mut self, v: Volume) {
 		self.volumes.push(v);
 	
+		// only increment when there are more than one valumes open 
+
 		if self.volumes.len() > 1 {
 			self.current_volume += 1;
 		}

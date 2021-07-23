@@ -22,12 +22,16 @@ pub fn incant(script: &str) -> Result<String, MerlinError> {
 pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
 	let command = make_command(script, Stdio::piped())?;
 
+	// send data to stdin
+
 	command.stdin
 		.ok_or(MerlinError::InvalidExternal)? // stdin is not captured
 		.write_all(input.as_bytes())
 		.or(Err(MerlinError::InvalidExternal))?; // can't send data to stdin
 
 	let mut s = String::new();
+
+	// capture data from stdout
 
 	command.stdout
 		.ok_or(MerlinError::InvalidExternal)? // stdout is not captured

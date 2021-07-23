@@ -2,6 +2,8 @@ use std::str::FromStr;
 
 pub mod commands;
 
+// our error structure
+
 pub enum MerlinError {
 	OutOfBounds,
 	InvalidSyntax,
@@ -127,6 +129,8 @@ impl Command {
 
 	pub fn get_needed(&self, args: usize) -> Result<usize, MerlinError> {
 		if self.valid(args) {
+			// choose the number of atoms we need, based on those available
+
 			let choose_mm = |max, min| {
 				if args >= max {
 					return max;

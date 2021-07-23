@@ -44,11 +44,15 @@ impl Volume {
 		}
 	}
 
+	// create a buffer from a file
+
 	pub fn from_file(fpath: &str) -> Result<Volume, MerlinError> {
 		let mut buff = Vec::new();
 		let mut w = true;
 
 		let path = Path::new(fpath);
+
+		// if the file exists, read it. Otherwise, just make an empty buffer 
 
 		if path.exists() {
 			match File::open(fpath) {
@@ -81,6 +85,8 @@ impl Volume {
 		&mut self.buffer[self.line]
 	}
 }
+
+// display our volume
 
 impl fmt::Display for Volume {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

@@ -47,7 +47,7 @@ impl Volume {
 	// move to specific line
 
 	pub fn appear(&mut self, n: usize) {
-		self.line = goto_respect_bounds(self.buffer.len(), n);
+		self.line = goto_respect_bounds(self.buffer.len()-1, n);
 		self.update_cursor();
 	}
 
@@ -134,6 +134,8 @@ impl Volume {
 	pub fn dub(&mut self, f_name: &str) -> Result<(), MerlinError> {
 		let err = Err(MerlinError::FileAlreadyExists);
 
+		// name the buffer, or return an error if it is already named
+
 		match self.name {
 			None    => {
 				let path = Path::new(f_name);
@@ -165,6 +167,8 @@ impl Volume {
 		}
 	}
 
+	// return a character based on if the buffer is saved or not
+
 	pub fn carved(&self) -> String {
 		if self.written {
 			String::from("")
@@ -176,20 +180,20 @@ impl Volume {
 	// remove a single character or line break
 
 	fn backspace(&mut self) -> bool {
-		// return a 
+		// return true if we have text to delete
 
-		if self.cursor == 0 {
-			if self.line > 0 {
+		if self.cursor == 0 { 
+			if self.line > 0 { // append what is left of the old line to the one above it
 				let old_line = self.buffer.remove(self.line);
 
 				self.line -= 1;
 
 				self.cursor = self.columns();
-				self.current().push_str(&old_line);
+				self.current().push_str(&old_line); // combine!
 			} else {
 				return false;
 			}
-		} else {
+		} else { // remove a single char
 			let (mut chars, remainder) = self.split_line_chars();
 			
 			chars.pop();
@@ -203,6 +207,8 @@ impl Volume {
 		true
 	}
 
+	// update the cursor position
+
 	fn update_cursor(&mut self) {
 		let len = self.columns();
 
@@ -211,9 +217,13 @@ impl Volume {
 		}
 	}
 
+	// convert the current line into a vec of chars
+
 	fn curr_into_chars(&self) -> Vec<char> {
 		self.buffer[self.line].chars().collect()
 	}
+
+	// split the chars in half
 
 	fn split_line_chars(&self) -> (Vec<char>, String) {
 		let mut chars = self.curr_into_chars();
@@ -222,6 +232,8 @@ impl Volume {
 		(chars, remainder)
 	}
 }
+
+// move a certain amount (+/-) respecting max and min
 
 fn move_respect_bounds(curr: usize, len: usize, n: isize) -> usize {
 	let modified = (curr as isize) + n;
@@ -234,6 +246,8 @@ fn move_respect_bounds(curr: usize, len: usize, n: isize) -> usize {
 
 	len-1
 }
+
+// got to a spot, cutting off extra past the max
 
 fn goto_respect_bounds(len: usize, n: usize) -> usize {
 	if n > len {

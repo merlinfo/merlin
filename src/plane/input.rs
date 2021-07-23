@@ -6,6 +6,8 @@ impl Plane {
 		let mut input = String::new();
 
 		while self.running {
+			// run our prompt nomen
+
 			match self.vision {
 				Vision::Atom   => self.parse_atom(";atom-prompt"),
 				Vision::Scribe => self.parse_atom(";scribe-prompt"),
@@ -18,14 +20,17 @@ impl Plane {
 			io::stdin()
 				.read_line(&mut input)
 				.expect("merlin: unable to read line");
-
 			
+			// parse our line, stripping newlines
+
 			self.parse_line(strip_nl(&input));
 
 			input.clear();
 		}
 	} 
 }
+
+// strip newlines
 
 fn strip_nl(input: &str) -> &str {
 	input.strip_suffix("\r\n")
