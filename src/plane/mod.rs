@@ -72,13 +72,7 @@ impl Plane {
 	// get the index of a nomen
 
 	fn get_nomen(&self, name: &str) -> Option<usize> {
-		for (i, n) in self.nomens.iter().enumerate() {
-			if n == name {
-				return Some(i);
-			}
-		}
-
-		None
+		self.nomens.iter().position(|n| n == name)
 	}
 
 	// print an error if they are turned on
