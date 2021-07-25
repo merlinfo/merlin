@@ -22,7 +22,7 @@ pub struct Volume {
 impl Volume {
 	// create a buffer with some existing text
 
-	pub fn from_text(contents: String) -> Volume {
+	pub fn from_text(contents: &str) -> Volume {
 		let mut buff = contents.lines().map(|s| s.to_owned()).collect::<Vec<String>>();
 		
 		if buff.len() == 0 {

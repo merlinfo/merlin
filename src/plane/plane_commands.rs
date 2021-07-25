@@ -18,7 +18,7 @@ impl Plane {
 
 	// insert a buffer created from text
 
-	pub fn genesis(&mut self, text: String) {
+	pub fn genesis(&mut self, text: &str) {
 		self.push_volume(Volume::from_text(text));
 	}
 

@@ -114,7 +114,7 @@ impl Plane {
 		let oksome  = |t: String| Ok(Some(t));
 
 		match command { // check what command is being used
-			Command::Genesis                           => if data.len() > 0 { self.genesis(data.remove(0)); } else { self.genesis(String::new()); },
+			Command::Genesis                           => if data.len() > 0 { self.genesis(&data[0]); } else { self.genesis(""); },
 			Command::Spine                             => return oksome(self.spine(parse_pos::<usize>(&data[0])?)?),
 			Command::Incant                            => return oksome(commands::incant(&data[0])?),
 			Command::Infuse                            => return oksome(commands::infuse(&data[0], &data[1])?),

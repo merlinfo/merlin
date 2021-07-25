@@ -26,9 +26,13 @@ fn main() {
 
 	let mut p = plane::Plane::new(!merlin_args.is_present("no-errors"));
 	
+	// parse the first argument as MN
+
 	if let Some(n) = merlin_args.value_of("NOTATION") {
 		p.parse_line(n);
 	}
+
+	// start the shell
 
 	p.repl();
 }
