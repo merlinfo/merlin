@@ -160,7 +160,7 @@ impl Volume {
 				let mut file = File::create(&name).or(Err(MerlinError::CreationFailed))?;
 				file.write_all(&(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::WriteFailed))?;
 
-				self.set_written(true);
+				self.written = true;
 				Ok(())
 			}
 			None       => Err(MerlinError::BufferNotNamed),

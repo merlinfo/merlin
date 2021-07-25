@@ -16,16 +16,10 @@ pub struct Volume {
 	line: usize,
 	cursor: usize,
 
-	written: bool,
+	pub written: bool,
 }
 
 impl Volume {
-	// set written to a boolean value
-
-	pub fn set_written(&mut self, w: bool) {
-		self.written = w;
-	}
-
 	// create a buffer with some existing text
 
 	pub fn from_text(contents: String) -> Volume {

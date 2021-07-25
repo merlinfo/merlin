@@ -158,7 +158,7 @@ impl Plane {
 						Command::Carve    => cvol.carve()?,
 						Command::Carved   => return oksome(cvol.carved()),
 						_ => { // we are modifying the buffer...
-							cvol.set_written(false);
+							cvol.written = false;
 
 							match command {
 								Command::Inscribe => cvol.inscribe(&data[0]),
