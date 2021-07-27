@@ -1,7 +1,7 @@
 // commands relating to the volume structure
 
 use std::iter::FromIterator;
-use std::{path::Path, fs::File};
+use std::{path::PathBuf, fs::File};
 use std::io::Write;
 use crate::commands::MerlinError;
 use super::Volume;
@@ -138,13 +138,13 @@ impl Volume {
 
 		match self.name {
 			None    => {
-				let path = Path::new(f_name);
+				let path = PathBuf::from(f_name);
 
 				if path.exists() {
 					return err
 				}
 
-				self.name = Some(path.to_path_buf());
+				self.name = Some(path);
 
 				Ok(())
 			}

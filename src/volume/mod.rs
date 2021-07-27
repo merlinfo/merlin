@@ -3,7 +3,7 @@ use std::fmt;
 mod vol_commands;
 
 use std::fs::File;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::io::{BufRead, BufReader};
 use crate::commands::MerlinError;
 
@@ -44,7 +44,7 @@ impl Volume {
 		let mut buff = Vec::new();
 		let mut w = true;
 
-		let path = Path::new(fpath);
+		let path = PathBuf::from(fpath);
 
 		// if the file exists, read it. Otherwise, just make an empty buffer 
 
@@ -65,7 +65,7 @@ impl Volume {
 		}
 
 		Ok(Volume {
-			name: Some(path.to_path_buf()),
+			name: Some(path),
 			buffer: buff,
 			line: 0,
 			cursor: 0,
