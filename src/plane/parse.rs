@@ -45,7 +45,7 @@ impl Plane {
 
 	// parse a single element, an "atom"
 
-	pub fn parse_atom(&mut self, atom: &str) -> Option<String> {
+	fn parse_atom(&mut self, atom: &str) -> Option<String> {
 		if let Some(stripped) = atom.strip_prefix(";") { // the atom is a command
 			match self.parse_command(stripped) {
 				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() }, // run and handle the command

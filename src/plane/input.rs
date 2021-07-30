@@ -9,8 +9,8 @@ impl Plane {
 			// run our prompt nomen
 
 			match self.vision {
-				Vision::Atom   => self.parse_atom(";atom-prompt"),
-				Vision::Scribe => self.parse_atom(";scribe-prompt"),
+				Vision::Atom   => self.parse_line(";atom-prompt"),
+				Vision::Scribe => self.parse_line(";scribe-prompt"),
 			};
 
 			std::io::stdout()
