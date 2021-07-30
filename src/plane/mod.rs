@@ -1,6 +1,6 @@
 use crate::{volume::Volume, nomen::Nomen, stack::Stack};
 
-mod plane_commands;
+pub mod plane_commands;
 mod parse;
 mod input;
 

@@ -34,5 +34,6 @@ fn main() {
 
 	// start the shell
 
+	p.parse_line("x");
 	p.repl();
 }
