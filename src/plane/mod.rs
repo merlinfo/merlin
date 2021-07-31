@@ -1,5 +1,5 @@
 use crate::{volume::Volume, stack::Stack};
-use self::nomen::Nomen;
+use nomen::Nomen;
 
 mod plane_commands;
 mod parse;
