@@ -1,8 +1,10 @@
-use crate::{volume::Volume, nomen::Nomen, stack::Stack};
+use crate::{volume::Volume, stack::Stack};
+use self::nomen::Nomen;
 
 mod plane_commands;
 mod parse;
 mod input;
+mod nomen;
 
 // an enum that represents the various modes of merlin
 
@@ -61,12 +63,6 @@ impl Plane {
 				Nomen::new(String::from("scribe-prompt"), Vec::new()),
 			],
 		}
-	}
-
-	// push a string to the stack
-
-	fn push(&mut self, item: String) {
-		self.stack.push(item);
 	}
 
 	// get the index of a nomen

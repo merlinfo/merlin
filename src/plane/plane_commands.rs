@@ -2,9 +2,9 @@
 
 extern crate shellexpand;
 
-use super::Plane;
+use super::{Plane, nomen::Nomen};
 use std::{fs::File, io::{BufRead, BufReader}};
-use crate::{volume::Volume, commands::MerlinError, nomen::Nomen};
+use crate::{volume::Volume, error::MerlinError};
 
 impl Plane {
 	// return the name of a volume

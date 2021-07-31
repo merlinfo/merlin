@@ -1,6 +1,7 @@
 use super::{Plane, Vision};
 use std::str::FromStr;
-use crate::commands::{commands, MerlinError, Command};
+use crate::commands::{commands, Command};
+use crate::error::MerlinError;
 
 impl Plane {
 	// parse a line based on what mode the user is in
@@ -35,7 +36,7 @@ impl Plane {
 
 		match self.parse_atom(atom) {
 			Some(a) => {
-				self.push(a);
+				self.stack.push(a);
 
 				true
 			}
@@ -92,7 +93,7 @@ impl Plane {
 			if self.print_result {
 				print!("{}", t);
 			} else {
-				self.push(t);
+				self.stack.push(t);
 			}
 		}
 

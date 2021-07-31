@@ -1,22 +1,7 @@
 use std::str::FromStr;
+use crate::error::MerlinError;
 
 pub mod commands;
-
-// our error structure
-
-pub enum MerlinError {
-	OutOfBounds,
-	InvalidSyntax,
-	UnknownCommand,
-	InvalidExternal,
-	InvalidOrNoArguments,
-	NoVolumes,
-	CreationFailed,
-	ReadFailed,
-	FileAlreadyExists,
-	BufferNotNamed,
-	WriteFailed,
-}
 
 // An enum that represents commands
 

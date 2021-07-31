@@ -9,7 +9,7 @@ mod plane;
 mod volume;
 mod stack;
 mod commands;
-mod nomen;
+mod error;
 
 fn main() {
 	let merlin_args = App::new("merlin:")

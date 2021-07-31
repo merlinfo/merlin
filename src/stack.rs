@@ -1,4 +1,4 @@
-use crate::commands::MerlinError;
+use crate::error::MerlinError;
 
 // stack struct
 

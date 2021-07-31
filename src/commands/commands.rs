@@ -4,7 +4,7 @@
 
 use std::process::{Command, Child, Stdio};
 use std::env;
-use super::MerlinError;
+use crate::error::MerlinError;
 use std::io::{Write, Read};
 
 // run an external command and capture its output

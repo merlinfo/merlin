@@ -1,9 +1,8 @@
 // commands relating to the volume structure
 
 use std::iter::FromIterator;
-use std::{path::PathBuf, fs::File};
-use std::io::Write;
-use crate::commands::MerlinError;
+use std::{path::PathBuf, fs};
+use crate::error::MerlinError;
 use super::Volume;
 
 impl Volume {
@@ -157,8 +156,7 @@ impl Volume {
 	pub fn carve(&mut self) -> Result<(), MerlinError> {
 		match &self.name {
 			Some(name) => {
-				let mut file = File::create(&name).or(Err(MerlinError::CreationFailed))?;
-				file.write_all(&(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::WriteFailed))?;
+				fs::write(&name, &(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::CreationFailed))?;
 
 				self.written = true;
 				Ok(())

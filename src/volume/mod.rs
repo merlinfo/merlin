@@ -5,7 +5,7 @@ mod vol_commands;
 use std::fs::File;
 use std::path::PathBuf;
 use std::io::{BufRead, BufReader};
-use crate::commands::MerlinError;
+use crate::error::MerlinError;
 
 // a structure representing a document, or "volume"
 
@@ -86,7 +86,7 @@ impl fmt::Display for Volume {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		match &self.name {
 			Some(p) => write!(f, "{}", p.display()),
-			&None    => write!(f, "*volume*"),
+			None    => write!(f, "*volume*"),
 		}
 	}
 }
