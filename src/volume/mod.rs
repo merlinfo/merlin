@@ -23,7 +23,7 @@ impl Volume {
 	// create a buffer with some existing text
 
 	pub fn from_text(contents: &str) -> Volume {
-		let mut buff = contents.lines().map(|s| s.to_owned()).collect::<Vec<String>>();
+		let mut buff: Vec<String> = contents.lines().map(|s| s.to_owned()).collect();
 		
 		if buff.len() == 0 {
 			buff = vec![String::new()];

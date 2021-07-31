@@ -50,7 +50,7 @@ pub fn tether(elems: &[String], teth: &str) -> String {
 // "make" a command from arguments, changing how it deals with io
 
 fn make_command(script: &str, sio: Stdio) -> Result<Child, MerlinError> {
-	let args = script.split_whitespace().collect::<Vec<&str>>();
+	let args: Vec<&str> = script.split_whitespace().collect();
 
 	Command::new(&args[0])
 		.args(&args[1..])
