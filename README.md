@@ -7,7 +7,6 @@ An esoteric text editor for wizards
 Building from source:
 
 ```sh
-make
 make install
 make spellbook # optional
 ```

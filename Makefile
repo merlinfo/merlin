@@ -1,14 +1,8 @@
-BIN = target/release/merlin
-PBIN = /usr/bin/merlin
-
 merlin:
 	cargo build --release
 
 install: $(BIN)
-	cp $(BIN) $(PBIN)
-
-uninstall: $(PBIN)
-	rm /usr/bin/merlin
+	cargo install --path .
 
 spellbook: spellbook.mn
 	mkdir ~/.merlin
