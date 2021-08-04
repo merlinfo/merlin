@@ -34,6 +34,6 @@ impl Plane {
 
 fn strip_nl(input: &str) -> &str {
 	input.strip_suffix("\r\n")
-		.or(input.strip_suffix("\n"))
+		.or_else(|| input.strip_suffix("\n"))
 		.unwrap_or(&input)
 }
