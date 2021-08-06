@@ -2,9 +2,9 @@
 
 extern crate shellexpand;
 
-use super::{Plane, nomen::Nomen};
 use std::{fs::File, io::{BufRead, BufReader}};
 use crate::{volume::Volume, error::MerlinError};
+use super::{Plane, nomen::Nomen};
 
 impl Plane {
 	// return the name of a volume
@@ -25,7 +25,7 @@ impl Plane {
 	// open a new file
 
 	pub fn summon(&mut self, path: &str) -> Result<(), MerlinError> {
-		Ok(self.push_volume(Volume::from_file(&shellexpand::tilde(&path))?))
+		Ok(self.push_volume(Volume::from_file(&shellexpand::tilde(path))?))
 	}
 
 	// close a file / buffer

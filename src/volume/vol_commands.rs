@@ -59,7 +59,7 @@ impl Volume {
 	// view a piece of text
 
 	pub fn peer(&self, b: usize, e: usize) -> Result<String, MerlinError> {
-		if b >= 1 && e <= self.buffer.len() && b <= e {
+		if b >= 1 && e <= self.buffer.len() && b <= e { // coords to view are valid
 			Ok(self.buffer.as_slice()[b-1..e].join("\n"))
 		} else {
 			Err(MerlinError::OutOfBounds)
@@ -94,9 +94,9 @@ impl Volume {
 	// overwrite text
 
 	pub fn trample(&mut self, s: &str) {
-		if s.is_empty() {
+		if s.is_empty() { // if our text is empty, clear the line
 			self.buffer[self.line].clear();
-		} else {
+		} else { // else, clear the line(s)
 			for (i, line) in s.lines().enumerate() {
 				if self.line + i >= self.buffer.len() { // the length of the piece of text excedes the length of the buffer
 					self.buffer.push(line.to_string());
