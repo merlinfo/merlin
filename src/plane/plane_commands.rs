@@ -73,7 +73,7 @@ impl Plane {
 	// read a file an parse its contents 
 
 	pub fn spellbook(&mut self, file_path: &str) -> Result<(), MerlinError> {
-		match File::open(&shellexpand::tilde(file_path).to_string()) {
+		match File::open(&*shellexpand::tilde(file_path)) {
 			Ok(file) => {
 				let reader = BufReader::new(file);
 
