@@ -8,6 +8,7 @@ mod nomen;
 
 // an enum that represents the various modes of merlin
 
+#[derive(Copy, Clone)]
 enum Vision {
 	Atom,
 	Scribe,

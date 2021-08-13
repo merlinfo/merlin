@@ -7,7 +7,7 @@ impl Plane {
 	// parse a line based on what mode the user is in
 
 	pub fn parse_line(&mut self, line: &str) {
-		match &self.vision {
+		match self.vision {
 			Vision::Atom    => self.parse_line_atom(line),
 			Vision::Scribe  => self.parse_line_scribe(line),
 		}
@@ -131,10 +131,26 @@ impl Plane {
 			Command::Mirror                            => self.print_result = !self.print_result,
 			Command::Adieu                             => self.running = false,
 			Command::Nomen                             => {
-				let n = data.pop().unwrap();
-				self.nomen(data, n);
+					// create a new nomen, popping the name from the data vector
+
+					let n = data.pop().unwrap();
+					self.nomen(data, n);
 				}
-			Command::Merlin                            => self.parse_line_atom(&data[0]),
+			Command::Merlin                            => {
+					// make sure we are always *starting* in atom mode, but preserving the original mode
+					// for when we finish parsing 
+
+					let old_mode = self.vision;
+					self.vision = Vision::Atom;
+
+					// parse each line of the input, respecting the current mode
+
+					for line in data[0].lines() {
+						self.parse_line(line);
+					}
+
+					self.vision = old_mode; // reset mode
+				}
 			Command::Summon                            => self.summon(&data[0])?,
 			Command::Spellbook                         => self.spellbook(&data[0])?,
 			Command::Volume                            => return oksome(self.volume().to_string()),
