@@ -7,7 +7,7 @@ use clap::{Arg, App, crate_version};
 
 mod plane;
 mod volume;
-mod stack;
+//mod stack;
 mod commands;
 mod error;
 

@@ -1,10 +1,12 @@
-use crate::{volume::Volume, stack::Stack};
+use crate::{volume::Volume};
+use stack::Stack;
 use nomen::Nomen;
 
 mod plane_commands;
 mod parse;
 mod input;
 mod nomen;
+mod stack;
 
 // an enum that represents the various modes of merlin
 
