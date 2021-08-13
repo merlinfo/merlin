@@ -56,8 +56,11 @@ impl Plane {
 				Nomen::new(String::from("space"), vec![String::from(" ")]),
 				Nomen::new(String::from("blank"), vec![String::from("")]),
 			
-				Nomen::new(String::from("scribe-notation"), Vec::new()),
-			
+				// notation to be executing after each line of input is entered 
+
+				Nomen::new(String::from("scribe-nomen"), Vec::new()),
+				Nomen::new(String::from("atom-nomen"), Vec::new()),
+
 				// our prompts
 
 				Nomen::new(String::from("atom-prompt"), vec![", ".to_string(), ";pen".to_string(), ";decay".to_string()]),

@@ -17,7 +17,7 @@ impl Plane {
 
 	fn parse_line_scribe(&mut self, line: &str) {
 		if self.atom_push(line) {
-			self.parse_atom(";scribe-notation");
+			self.parse_atom(";scribe-nomen"); // we run this nomen after every line entered in scribe mode (excluding command calls)
 		}
 	}
 
@@ -26,6 +26,10 @@ impl Plane {
 	fn parse_line_atom(&mut self, line: &str) {
 		for atom in line.split_whitespace() {
 			self.atom_push(atom);
+		}
+		
+		if line != ";atom-prompt" { // don't run if we are parsing the prompt
+			self.parse_atom(";atom-nomen"); // nomen to run after each line of input is parsed
 		}
 	}
 
