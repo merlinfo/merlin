@@ -1,6 +1,6 @@
 [package]
 name = "merlin"
-version = "1.0.22"
+version = "1.0.23"
 authors = ["geremachek <mrender2005@gmail.com>"]
 edition = "2018"
 
@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 shellexpand = "2.1"
+ctrlc       = "3.1.1"
 
 [dependencies.clap]
 version = "2.33.3"

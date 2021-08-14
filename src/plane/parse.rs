@@ -51,9 +51,11 @@ impl Plane {
 	// parse a single element, an "atom"
 
 	fn parse_atom(&mut self, atom: &str) -> Option<String> {
+		let err = || eprintln!("?");
+
 		if let Some(stripped) = atom.strip_prefix(";") { // the atom is a command
 			match self.parse_command(stripped) {
-				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { self.error() }, // run and handle the command
+				Ok((command, data)) => if self.run_and_handle(command, data).is_err() { err() }, // run and handle the command
 				Err(_)              => { // the command isn't valid...
 					match self.get_nomen(stripped) { // check if it is a nomen
 						Some(i) => {
@@ -67,7 +69,7 @@ impl Plane {
 							
 							self.nomens.push(nomen);
 						} 
-						None    => self.error(),
+						None    => err(),
 					}
 				}
 			}

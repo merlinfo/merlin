@@ -26,7 +26,6 @@ pub struct Plane {
 
 	vision: Vision, // current vision
 	print_result: bool,
-	show_errors: bool,
 
 	running: bool,
 
@@ -36,7 +35,7 @@ pub struct Plane {
 impl Plane {
 	// create a new plane with no open volumes
  
-	pub fn new(se: bool) -> Plane {
+	pub fn new() -> Plane {
 		Plane {
 			stack: Stack::new(),
 			volumes: Vec::new(),
@@ -46,7 +45,6 @@ impl Plane {
 			vision: Vision::Atom,
 
 			print_result: false,
-			show_errors: se,
 
 			running: true,
 
@@ -75,14 +73,6 @@ impl Plane {
 
 	fn get_nomen(&self, name: &str) -> Option<usize> {
 		self.nomens.iter().position(|n| n == name)
-	}
-
-	// print an error if they are turned on
-
-	fn error(&self) {
-		if self.show_errors {
-			eprintln!("?");
-		}
 	}
 
 	// add a new volume
