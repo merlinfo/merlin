@@ -20,7 +20,7 @@ fn main() {
 		.arg(Arg::with_name("interrupt")
 			.short("i")
 			.long("interrupt")
-			.help("Don't block interrupts (Ctrl-C)"))
+			.help("Block interrupts (Ctrl-C)"))
 		.arg(Arg::with_name("NOTATION")
 			.index(1)
 			.multiple(true)
@@ -35,9 +35,9 @@ fn main() {
 		p.parse_line(&n.collect::<Vec<&str>>().join(" "));
 	}
 
-	// only handle interrupts when the -i flag is NOT present
+	// only handle interrupts when the -i flag is present
 
-	if !merlin_args.is_present("interrupt") {
+	if merlin_args.is_present("interrupt") {
 		util::err_msg(ctrlc::set_handler(|| ()), "can't handle Ctrl-C events");
 	}
 
