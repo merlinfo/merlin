@@ -156,7 +156,7 @@ impl Volume {
 	pub fn carve(&mut self) -> Result<(), MerlinError> {
 		match &self.name {
 			Some(name) => {
-				fs::write(&name, &(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::CreationFailed))?;
+				fs::write(&name, &(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::CreationOrWriteFailed))?;
 
 				self.written = true;
 				Ok(())

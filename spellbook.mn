@@ -1,11 +1,15 @@
 ᛗ M ;nomen
 
+\;pen \;decay disp ;nomen
+\;disp ;new \;disp dispn ;nomen
+;new \;tether lines ;nomen
+
 ;scribe
-Welcome to Merlin!
+Welcome to Merlin! 
+Type ";adieu" to quit.
 ;atom
-;pen
 
-;new ;pen
-;new ;pen
+;lines
 
-;destroy
+;dispn
+;new ;disp
