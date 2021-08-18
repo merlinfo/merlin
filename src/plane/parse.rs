@@ -215,5 +215,5 @@ impl Plane {
 // convert a str (containing positional information) into a T, converting the error into type MerlinError
 
 fn parse_pos<T: std::str::FromStr>(s: &str) -> Result<T, MerlinError> {
-	s.parse::<T>().or(Err(MerlinError::InvalidSyntax))
+	s.trim().parse::<T>().or(Err(MerlinError::InvalidSyntax))
 }

@@ -96,7 +96,7 @@ dependencies = [
 
 [[package]]
 name = "merlin"
-version = "1.1.2"
+version = "1.2.1"
 dependencies = [
  "clap",
  "ctrlc",
