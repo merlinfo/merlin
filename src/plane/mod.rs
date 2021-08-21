@@ -1,4 +1,4 @@
-use crate::{volume::Volume};
+use crate::{volume::Volume, error::MerlinError};
 use stack::Stack;
 use nomen::Nomen;
 
@@ -73,6 +73,12 @@ impl Plane {
 
 	fn get_nomen(&self, name: &str) -> Option<usize> {
 		self.nomens.iter().position(|n| n == name)
+	}
+
+	// get_nomen but it returns an error if it can't find what it's looking for
+
+	fn get_nomen_err(&self, name: &str) -> Result<usize, MerlinError> {
+		 self.get_nomen(name).ok_or(MerlinError::UnknownNomen)
 	}
 
 	// add a new volume

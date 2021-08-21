@@ -140,6 +140,8 @@ impl Plane {
 					let n = data.pop().unwrap();
 					self.nomen(data, n);
 				}
+			Command::Disenchant                        => self.disenchant(&data[0])?,
+			Command::Smash                             => self.smash(&data[0])?,
 			Command::Merlin                            => {
 					// make sure we are always *starting* in atom mode, but preserving the original mode
 					// for when we finish parsing 
@@ -159,6 +161,7 @@ impl Plane {
 			Command::Spellbook                         => self.spellbook(&data[0])?,
 			Command::Volume                            => return oksome(self.volume().to_string()),
 			Command::Volumes                           => return oksome(self.volumes.len().to_string()),
+			Command::Atoms                             => return oksome(self.stack.len().to_string()),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume

@@ -14,6 +14,7 @@ pub enum MerlinError {
 	ReadFailed,
 	FileAlreadyExists,
 	BufferNotNamed,
+	UnknownNomen,
 }
 
 impl fmt::Display for MerlinError {
@@ -28,7 +29,8 @@ impl fmt::Display for MerlinError {
 			MerlinError::CreationOrWriteFailed => "failed to create / write a file",
 			MerlinError::ReadFailed            => "failed to read a file",
 			MerlinError::FileAlreadyExists     => "file already exists",
-			MerlinError::BufferNotNamed        => "buffer is not named"
+			MerlinError::BufferNotNamed        => "buffer is not named",
+			MerlinError::UnknownNomen          => "unknown nomen",
 		};
 
 		write!(f, "merlin: {}", msg)	

@@ -60,13 +60,30 @@ impl Plane {
 		Ok(())
 	}
 
+	// "clear" a nomen
+
+	pub fn disenchant(&mut self, name: &str) -> Result<(), MerlinError> {
+		// empty the vector of atoms for a certain nomen, reutrn an error if we can't find it 
+
+		let nomen_index = self.get_nomen_err(name)?;
+		Ok(self.nomens[nomen_index]
+			.atoms
+			.clear())
+	}
+
+	// remove a nomen
+
+	pub fn smash(&mut self, name: &str) -> Result<(), MerlinError> {
+		// remove the nomen from the list if it exists, otherwise return an error
+
+		let _ = self.nomens.remove(self.get_nomen_err(name)?);
+		Ok(())
+	}
+
 	// create a new nomen
 
 	pub fn nomen(&mut self, atoms: Vec<String>, name: String) {
-		if let Some(i) = self.get_nomen(&name) {
-			self.nomens.remove(i);
-		}
-
+		let _ = self.smash(&name); // remove the nomen if it exists 
 		self.nomens.push(Nomen::new(name, atoms))
 	}
 
