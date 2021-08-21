@@ -116,9 +116,17 @@ impl Command {
 			}
 		};
 
+		let all_with_min = |min| {
+			if args >= min {
+				args
+			} else {
+				args + 1
+			}
+		};
+
 		let needed = match self {
-			Command::Tether                                                                                                                                                => choose_mm(3, args+1), // we need a minimum of 3
-			Command::Nomen                                                                                                                                                 => choose_mm(2, args+1), // min of 1
+			Command::Tether                                                                                                                                                => all_with_min(3), // we need a minimum of 3
+			Command::Nomen                                                                                                                                                 => all_with_min(2), // min of 1
 			Command::Spot    | Command::Span     | Command::Molecule  | Command::Pen      | Command::Orbit  | Command::Decay    | Command::Destroy | Command::Mirror     |
 			Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume     |
 			Command::Volumes | Command::Carved   | Command::Atoms                                                                                                          => 0,
