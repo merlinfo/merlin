@@ -60,7 +60,7 @@ impl Volume {
 
 	pub fn peer(&self, b: usize, e: usize) -> Result<String, MerlinError> {
 		if b >= 1 && e <= self.buffer.len() && b <= e { // coords to view are valid
-			Ok(self.buffer.as_slice()[b-1..e].join("\n"))
+			Ok(self.buffer[b-1..e].join("\n"))
 		} else {
 			Err(MerlinError::OutOfBounds)
 		}
