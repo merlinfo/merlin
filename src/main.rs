@@ -1,5 +1,5 @@
 /*
-	ᛗ ᛘ - Merliin
+	The Merlin Text Editor
 */
 
 extern crate clap;
@@ -15,7 +15,7 @@ mod util;
 
 fn main() {
 	let merlin_args = App::new("merlin:")
-		.about("An esoteric, programmable text editor")
+		.about("An esoteric text editor for wizards")
 		.version(crate_version!())
 		.arg(Arg::with_name("interrupt")
 			.short("i")
