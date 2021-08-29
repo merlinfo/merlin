@@ -1,7 +1,5 @@
 // assorted commands...
 
-//extern crate shellexpand;
-
 use std::process::{Command, Child, Stdio};
 use std::env;
 use crate::error::MerlinError;
