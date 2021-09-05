@@ -3,40 +3,38 @@
 use std::process::{Command, Child, Stdio};
 use std::env;
 use crate::error::MerlinError;
-use std::io::{Write, Read};
+use std::io::Write;
+
+// wait for, and capture of a child process, dealing with all of the errors
+
+macro_rules! capture_output {
+	($command:ident) => {
+		String::from_utf8($command.wait_with_output()
+			.or(Err(MerlinError::InvalidExternal))?.stdout)
+			.or(Err(MerlinError::InvalidExternal))
+	}
+}
 
 // run an external command and capture its output
 
 pub fn incant(script: &str) -> Result<String, MerlinError> {
 	let command = make_command(script, Stdio::inherit())?;
-
-	String::from_utf8(command.wait_with_output()
-		.or(Err(MerlinError::InvalidExternal))?.stdout)
-		.or(Err(MerlinError::InvalidExternal))
+	capture_output!(command)
 }
 
 // send text to an external command
 
 pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
-	let command = make_command(script, Stdio::piped())?;
+	let mut command = make_command(script, Stdio::piped())?;
 
 	// send data to stdin
 
-	command.stdin
+	command.stdin.take()
 		.ok_or(MerlinError::InvalidExternal)? // stdin is not captured
 		.write_all(input.as_bytes())
 		.or(Err(MerlinError::InvalidExternal))?; // can't send data to stdin
 
-	let mut s = String::new();
-
-	// capture data from stdout
-
-	command.stdout
-		.ok_or(MerlinError::InvalidExternal)? // stdout is not captured
-		.read_to_string(&mut s)
-		.or(Err(MerlinError::InvalidExternal))?; // can't read datwa
-
-	Ok(s)
+	capture_output!(command)
 }
 
 // "tether" elements together
