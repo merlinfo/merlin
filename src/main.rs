@@ -49,9 +49,7 @@ fn main() {
 
 	if merlin_args.is_present("stdin") {
 		p.parse_stdin()
+	} else { // otherwise start the REPL
+		p.repl();
 	}
-
-	// otherwise start the REPL
-
-	p.repl();
 }
