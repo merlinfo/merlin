@@ -1,6 +1,14 @@
 use crate::util;
 use super::{Plane, Vision};
-use std::io::{self, Write};
+use std::io::{self, Write, BufRead};
+
+// flush stdout, handling errors
+
+macro_rules! flush_stdout {
+	() => {
+		util::err_msg(io::stdout().flush(), "unable to flush stdout")
+	}
+}
 
 impl Plane {
 	pub fn repl(&mut self) {
@@ -14,8 +22,8 @@ impl Plane {
 				Vision::Scribe => self.parse_line(";scribe-prompt"),
 			};
 
-			util::err_msg(io::stdout().flush(), "unable to flush stdout");          // flush stdout, handling any errors
-			util::err_msg(io::stdin().read_line(&mut input), "unable to readline"); // read a line of input (handle any errors)
+			flush_stdout!();                                                         // flush stdout, handling any errors
+			util::err_msg(io::stdin().read_line(&mut input), "unable to read line"); // read a line of input (handle any errors)
 
 			// parse our line, stripping newlines
 
@@ -23,7 +31,20 @@ impl Plane {
 
 			input.clear();
 		}
-	} 
+	}
+
+	pub fn parse_stdin(&mut self) {
+		for line in io::stdin().lock().lines() {
+			self.parse_line(strip_nl(&line
+				.expect(&format!("{} {}", util::ERROR_PREFIX, "can't read stdin"))));
+			
+			flush_stdout!();
+
+			if !self.running {
+				break;
+			}
+		}
+	}
 }
 
 // strip newlines

@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::util::ERROR_PREFIX;
 
 // our error structure
 
@@ -33,6 +34,6 @@ impl fmt::Display for MerlinError {
 			MerlinError::UnknownNomen          => "unknown nomen",
 		};
 
-		write!(f, "merlin: {}", msg)	
+		write!(f, "{} {}", ERROR_PREFIX, msg)	
 	}
 }

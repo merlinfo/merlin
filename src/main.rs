@@ -21,6 +21,10 @@ fn main() {
 			.short("i")
 			.long("interrupt")
 			.help("Don't Block interrupts (Ctrl-C)"))
+		.arg(Arg::with_name("stdin")
+			.short("s")
+			.long("stdin")
+			.help("Parse stdin as merlin notation"))
 		.arg(Arg::with_name("NOTATION")
 			.index(1)
 			.multiple(true)
@@ -41,7 +45,13 @@ fn main() {
 		util::err_msg(ctrlc::set_handler(|| ()), "can't handle Ctrl-C events");
 	}
 
-	// start the shell
+	// check to see if we should parse stdin...
+
+	if merlin_args.is_present("stdin") {
+		p.parse_stdin()
+	}
+
+	// otherwise start the REPL
 
 	p.repl();
 }
