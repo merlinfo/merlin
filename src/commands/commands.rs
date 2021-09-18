@@ -37,12 +37,6 @@ pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
 	capture_output!(command)
 }
 
-// "tether" elements together
-
-pub fn tether(elems: &[String], teth: &str) -> String {
-	elems.join(teth)
-}
-
 // "make" a command from arguments, changing how it deals with io
 
 fn make_command(script: &str, sio: Stdio) -> Result<Child, MerlinError> {

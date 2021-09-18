@@ -116,19 +116,17 @@ impl Plane {
 	// run a single command with plain text arguments
 
 	fn run_command(&mut self, command: Command, mut data: Vec<String>) -> Result<Option<String>, MerlinError> {
-		let oksome  = |t: String| Ok(Some(t));
-
 		match command { // check what command is being used
 			Command::Genesis                           => if data.len() > 0 { self.genesis(&data[0]); } else { self.genesis(""); },
-			Command::Spine                             => return oksome(self.spine(parse_pos::<usize>(&data[0])?)?),
-			Command::Incant                            => return oksome(commands::incant(&data[0])?),
-			Command::Infuse                            => return oksome(commands::infuse(&data[0], &data[1])?),
+			Command::Spine                             => return Ok(Some(self.spine(parse_pos::<usize>(&data[0])?)?)),
+			Command::Incant                            => return Ok(Some(commands::incant(&data[0])?)),
+			Command::Infuse                            => return Ok(Some(commands::infuse(&data[0], &data[1])?)),
 			Command::Molecule                          => self.stack.molecule(),
 			Command::Pen                               => self.stack.pen(),
 			Command::Orbit                             => self.stack.orbit()?,
 			Command::Decay                             => self.stack.decay(),
 			Command::Destroy                           => self.stack.destroy(),
-			Command::Tether                            => return oksome(commands::tether(&data[..data.len()-1], &data.last().unwrap())),
+			Command::Tether                            => return Ok(Some(data[..data.len()-1].join(&data.last().unwrap()))),
 			Command::Fray                              => self.fray(&data[data.len()-2], &data.last().unwrap()),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
@@ -159,9 +157,9 @@ impl Plane {
 				}
 			Command::Summon                            => self.summon(&data[0])?,
 			Command::Spellbook                         => self.spellbook(&data[0])?,
-			Command::Volume                            => return oksome(self.volume().to_string()),
-			Command::Volumes                           => return oksome(self.volumes.len().to_string()),
-			Command::Atoms                             => return oksome(self.stack.len().to_string()),
+			Command::Volume                            => return Ok(Some(self.volume().to_string())),
+			Command::Volumes                           => return Ok(Some(self.volumes.len().to_string())),
+			Command::Atoms                             => return Ok(Some(self.stack.len().to_string())),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume
@@ -169,18 +167,18 @@ impl Plane {
 					match command {
 						Command::Shelve   => self.shelve(parse_pos::<usize>(&data[0])?)?,
 						Command::Focus    => self.focus(parse_pos::<usize>(&data[0])?)?,
-						Command::Spot     => return oksome(cvol.spot().to_string()),
-						Command::Span     => return oksome(cvol.span().to_string()),
-						Command::Pin      => return oksome(cvol.pin().to_string()),
-						Command::Columns  => return oksome(cvol.columns().to_string()),
+						Command::Spot     => return Ok(Some(cvol.spot().to_string())),
+						Command::Span     => return Ok(Some(cvol.span().to_string())),
+						Command::Pin      => return Ok(Some(cvol.pin().to_string())),
+						Command::Columns  => return Ok(Some(cvol.columns().to_string())),
 						Command::Traverse => cvol.traverse(parse_pos::<isize>(&data[0])?),
 						Command::Shift    => cvol.shift(parse_pos::<isize>(&data[0])?),
 						Command::Appear   => cvol.appear(parse_pos::<usize>(&data[0])?),
 						Command::Infix    => cvol.infix(parse_pos::<usize>(&data[0])?),
-						Command::Peer     => return oksome(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?),
+						Command::Peer     => return Ok(Some(cvol.peer(parse_pos::<usize>(&data[0])?, parse_pos::<usize>(&data[1])?)?)),
 						Command::Dub      => cvol.dub(&data[0])?,
 						Command::Carve    => cvol.carve()?,
-						Command::Carved   => return oksome(cvol.carved()),
+						Command::Carved   => return Ok(Some(cvol.carved())),
 						_ => { // we are modifying the buffer...
 							cvol.written = false;
 
@@ -203,7 +201,7 @@ impl Plane {
 					};
 
 					if n == 0 {
-						return oksome("0".to_string());
+						return Ok(Some("0".to_string()));
 					}
 					
 					return Err(MerlinError::NoVolumes);
