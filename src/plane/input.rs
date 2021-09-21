@@ -28,7 +28,7 @@ impl Plane {
 	pub fn parse_stdin(&mut self) {
 		for line in io::stdin().lock().lines() {
 			self.parse_line(strip_nl(&line
-				.expect(&format!("{} {}", util::ERROR_PREFIX, "can't read stdin"))));
+				.expect(&format!("{} can't read stdin", util::ERROR_PREFIX))));
 			
 			flush_stdout();
 

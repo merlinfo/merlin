@@ -34,6 +34,6 @@ impl fmt::Display for MerlinError {
 			MerlinError::UnknownNomen          => "unknown nomen",
 		};
 
-		write!(f, "{} {}", ERROR_PREFIX, msg)	
+		write!(f, "{} {}", ERROR_PREFIX, msg)
 	}
 }
