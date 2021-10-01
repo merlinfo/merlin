@@ -1,7 +1,7 @@
 merlin:
 	cargo build --release
 
-install: $(BIN)
+install:
 	cargo install --path .
 
 spellbook: spellbook.mn
