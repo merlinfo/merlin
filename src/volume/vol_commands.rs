@@ -1,9 +1,9 @@
 // commands relating to the volume structure
 
-use std::iter::FromIterator;
+use gapbuf::{GapBuffer, gap_buffer};
 use std::{path::PathBuf, fs};
 use crate::error::MerlinError;
-use super::Volume;
+use super::{Volume, gb_of_chars};
 
 impl Volume {
 	// return the number of the current line
@@ -27,7 +27,7 @@ impl Volume {
 	// return the length of the line
 
 	pub fn columns(&self) -> usize {
-		self.buffer[self.line].chars().count()
+		self.buffer[self.line].len()
 	}
 	
 	// move up or down a line
@@ -60,34 +60,42 @@ impl Volume {
 
 	pub fn peer(&self, b: usize, e: usize) -> Result<String, MerlinError> {
 		if b >= 1 && e <= self.buffer.len() && b <= e { // coords to view are valid
-			Ok(self.buffer[b-1..e].join("\n"))
+			Ok(self.buff_to_string(b, e))
 		} else {
 			Err(MerlinError::OutOfBounds)
 		}
 	}
 
-	// inset some text into the buffer
+	// insert some text into the buffer
 
 	pub fn inscribe(&mut self, s: &str) {
 		if !s.is_empty() {
-			let mut lines = s.lines();
+			let mut lines = s.lines().peekable(); // iterator over the lines in the input
 
-			// remove text after the cursor and push the first line to the end of the current line
+			self.insert_iter(lines.next().unwrap().chars()); // insert the first line
+			self.cursor = self.buffer[self.line].gap();
 
-			let (chars, remainder) = self.split_line_chars();
+			// there are some remaining lines...
+			
+			if lines.peek().is_some() {
+				let append_later: Vec<char> = self.buffer[self.line].drain(
+					self.cursor..).collect(); // take the text after the cursor
 
-			self.buffer[self.line] = String::from_iter(chars);
-			self.current().push_str(lines.next().unwrap());
+				// insert the lines
 
-			// loop through the remaining lines and intersplice them in the buffer
+				for line in lines {
+					self.line += 1;
+					self.buffer.insert(self.line, gb_of_chars(line));
+				}
 
-			for line in lines {
-				self.line += 1;
-				self.buffer.insert(self.line, line.to_string());
+				self.cursor = self.buffer[self.line].len(); // move the cursor the end of the line
+
+				// append the remaining text
+
+				for ch in append_later {
+					self.buffer[self.line].push_back(ch);
+				}
 			}
-
-			self.cursor = self.columns();
-			self.current().push_str(&remainder);
 		}
 	}
 
@@ -97,16 +105,20 @@ impl Volume {
 		if s.is_empty() { // if our text is empty, clear the line
 			self.buffer[self.line].clear();
 		} else { // else, clear the line(s)
+			let mut chars: GapBuffer<char>;
+			
 			for (i, line) in s.lines().enumerate() {
+				chars = gb_of_chars(line);
+
 				if self.line + i >= self.buffer.len() { // the length of the piece of text excedes the length of the buffer
-					self.buffer.push(line.to_string());
+					self.buffer.push_back(chars);
 				} else {
-					self.buffer[self.line+i] = line.to_string();
+					self.buffer[self.line+i] = chars;
 				}
 			}
 		}
 
-		self.update_cursor();
+		self.cursor = 0;
 	}
 
 	// clear the buffer
@@ -115,7 +127,7 @@ impl Volume {
 		self.cursor = 0;
 		self.line = 0;
 
-		self.buffer = vec![String::new()]
+		self.buffer = gap_buffer![GapBuffer::new()];
 	}
 
 	// shave off parts of text from a line
@@ -156,7 +168,7 @@ impl Volume {
 	pub fn carve(&mut self) -> Result<(), MerlinError> {
 		match &self.name {
 			Some(name) => {
-				fs::write(&name, &(self.buffer.join("\n") + "\n").as_bytes()).or(Err(MerlinError::CreationOrWriteFailed))?;
+				fs::write(&name, &(self.buff_to_string(0, self.columns()) + "\n").as_bytes()).or(Err(MerlinError::CreationOrWriteFailed))?;
 
 				self.written = true;
 				Ok(())
@@ -169,7 +181,7 @@ impl Volume {
 
 	pub fn carved(&self) -> String {
 		if self.written {
-			String::from("")
+			String::from("@")
 		} else {
 			String::from("!")
 		}
@@ -185,21 +197,19 @@ impl Volume {
 				let old_line = self.buffer.remove(self.line);
 
 				self.line -= 1;
-
 				self.cursor = self.columns();
-				self.current().push_str(&old_line); // combine!
+
+				// combine the current line and the old line.
+
+				for (i, ch) in old_line.iter().enumerate() {
+					self.buffer[self.line].insert(self.cursor+i, *ch);
+				}
 			} else {
 				return false;
 			}
 		} else { // remove a single char
-			let (mut chars, remainder) = self.split_line_chars();
-			
-			chars.pop();
-			self.buffer[self.line] = String::from_iter(chars); 
-
-			self.current().push_str(&remainder);
-
 			self.cursor -= 1;
+			self.buffer[self.line].remove(self.cursor);
 		}
 
 		true
@@ -215,19 +225,21 @@ impl Volume {
 		}
 	}
 
-	// convert the current line into a vec of chars
+	// convert (a part of) the buffer into a string
 
-	fn curr_into_chars(&self) -> Vec<char> {
-		self.buffer[self.line].chars().collect()
+	fn buff_to_string(&self, b: usize, e: usize) -> String {
+		self.buffer
+			.range(b-1..e)
+			.iter()
+			.map(|l| l.iter().collect::<String>())
+			.collect::<Vec<String>>()
+			.join("\n")
 	}
 
-	// split the chars in half
+	// insert some text into the current line
 
-	fn split_line_chars(&self) -> (Vec<char>, String) {
-		let mut chars = self.curr_into_chars();
-		let remainder = String::from_iter(chars.split_off(self.cursor));
-		
-		(chars, remainder)
+	fn insert_iter<T: std::iter::Iterator<Item = char>>(&mut self, iter: T) {
+		self.buffer[self.line].insert_many(self.cursor, iter);
 	}
 }
 

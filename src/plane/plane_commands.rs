@@ -4,7 +4,7 @@ extern crate shellexpand;
 
 use std::{fs::File, io::{BufRead, BufReader}};
 use crate::{volume::Volume, error::MerlinError};
-use super::{Plane, nomen::Nomen};
+use super::Plane;
 
 impl Plane {
 	// return the name of a volume
@@ -63,11 +63,10 @@ impl Plane {
 	// "clear" a nomen
 
 	pub fn disenchant(&mut self, name: &str) -> Result<(), MerlinError> {
-		// empty the vector of atoms for a certain nomen, reutrn an error if we can't find it 
+		// empty the vector of atoms for a certain nomen, reutrn an error if we can't find it
 
-		let nomen_index = self.get_nomen_err(name)?;
-		Ok(self.nomens[nomen_index]
-			.atoms
+		Ok(self.nomens.get_mut(name)
+			.ok_or(MerlinError::UnknownNomen)?
 			.clear())
 	}
 
@@ -76,15 +75,10 @@ impl Plane {
 	pub fn smash(&mut self, name: &str) -> Result<(), MerlinError> {
 		// remove the nomen from the list if it exists, otherwise return an error
 
-		let _ = self.nomens.remove(self.get_nomen_err(name)?);
+		self.nomens.remove(name)
+			.ok_or(MerlinError::UnknownNomen)?;
+
 		Ok(())
-	}
-
-	// create a new nomen
-
-	pub fn nomen(&mut self, atoms: Vec<String>, name: String) {
-		let _ = self.smash(&name); // remove the nomen if it exists 
-		self.nomens.push(Nomen::new(name, atoms))
 	}
 
 	// read a file an parse its contents 

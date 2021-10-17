@@ -55,18 +55,14 @@ impl Plane {
 			match self.parse_command(stripped) {
 				Ok((command, data)) => if let Err(e) = self.run_and_handle(command, data) { eprintln!("{}", e) }, // run and handle the command
 				Err(e)              => { // the command isn't valid...
-					match self.get_nomen(stripped) { // check if it is a nomen
-						Some(i) => {
-							let nomen = self.nomens.remove(i);
-							
-							// parse each atom in the nomen
-
-							for atom in &nomen.atoms {
-								self.atom_push(atom);
+					match self.nomens.remove(stripped) { // check if it is a nomen
+						Some(n) => {
+							for atom in &n {
+								self.atom_push(&atom);
 							}
-							
-							self.nomens.push(nomen);
-						} 
+
+							self.nomens.insert(stripped.to_string(), n);
+						},
 						None    => eprintln!("{}", e),
 					}
 				}
@@ -92,13 +88,7 @@ impl Plane {
 
 	fn run_and_handle(&mut self, command: Command, data: Vec<String>) -> Result<(), MerlinError> {
 		if let Some(t) = self.run_command(command, data)? {
-			// print or push...
-
-			if self.print_result {
-				print!("{}", t);
-			} else {
-				self.stack.push(t);
-			}
+			self.stack.push(t);
 		}
 
 		Ok(())
@@ -130,13 +120,12 @@ impl Plane {
 			Command::Fray                              => self.fray(&data[data.len()-2], &data.last().unwrap()),
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
-			Command::Mirror                            => self.print_result = !self.print_result,
 			Command::Adieu                             => self.running = false,
 			Command::Nomen                             => {
 					// create a new nomen, popping the name from the data vector
 
 					let n = data.pop().unwrap();
-					self.nomen(data, n);
+					self.nomens.insert(n, data);
 				}
 			Command::Disenchant                        => self.disenchant(&data[0])?,
 			Command::Smash                             => self.smash(&data[0])?,

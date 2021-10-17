@@ -1,11 +1,15 @@
-use crate::{volume::Volume, error::MerlinError};
+use std::{
+	collections::HashMap,
+	array::IntoIter,
+	iter::FromIterator,
+};
+
+use crate::volume::Volume;
 use stack::Stack;
-use nomen::Nomen;
 
 mod plane_commands;
 mod parse;
 mod input;
-mod nomen;
 mod stack;
 
 // an enum that represents the various modes of merlin
@@ -25,11 +29,10 @@ pub struct Plane {
 	current_volume: usize,
 
 	vision: Vision, // current vision
-	print_result: bool,
 
 	running: bool,
 
-	nomens: Vec<Nomen>,
+	nomens: HashMap<String, Vec<String>>,
 }
 
 impl Plane {
@@ -44,41 +47,27 @@ impl Plane {
 
 			vision: Vision::Atom,
 
-			print_result: false,
-
 			running: true,
 
 			// built in nomens
 
-			nomens: vec![
-				Nomen::new(String::from("new"), vec![String::from("\n")]),
-				Nomen::new(String::from("tab"), vec![String::from("\t")]),
-				Nomen::new(String::from("space"), vec![String::from(" ")]),
-				Nomen::new(String::from("blank"), vec![String::from("")]),
+			nomens: HashMap::<String, Vec<String>>::from_iter(IntoIter::new([
+				(String::from("new"), vec![String::from("\n")]),
+				(String::from("tab"), vec![String::from("\t")]),
+				(String::from("space"), vec![String::from(" ")]),
+				(String::from("blank"), vec![String::from("")]),
 			
 				// notation to be executing after each line of input is entered 
 
-				Nomen::new(String::from("scribe-nomen"), Vec::new()),
-				Nomen::new(String::from("atom-nomen"), Vec::new()),
+				(String::from("scribe-nomen"), Vec::new()),
+				(String::from("atom-nomen"), Vec::new()),
 
 				// our prompts
 
-				Nomen::new(String::from("atom-prompt"), vec![", ".to_string(), ";pen".to_string(), ";decay".to_string()]),
-				Nomen::new(String::from("scribe-prompt"), Vec::new()),
-			],
+				(String::from("atom-prompt"), vec![", ".to_string(), ";pen".to_string(), ";decay".to_string()]),
+				(String::from("scribe-prompt"), Vec::new()),
+			])),
 		}
-	}
-
-	// get the index of a nomen
-
-	fn get_nomen(&self, name: &str) -> Option<usize> {
-		self.nomens.iter().position(|n| n == name)
-	}
-
-	// get_nomen but it returns an error if it can't find what it's looking for
-
-	fn get_nomen_err(&self, name: &str) -> Result<usize, MerlinError> {
-		 self.get_nomen(name).ok_or(MerlinError::UnknownNomen)
 	}
 
 	// add a new volume

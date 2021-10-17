@@ -2,16 +2,27 @@ use std::fmt;
 
 mod vol_commands;
 
-use std::fs::File;
-use std::path::PathBuf;
-use std::io::{BufRead, BufReader};
+use std::{
+	fs::File,
+	path::PathBuf,
+	io::{BufRead, BufReader},
+	iter::FromIterator,
+};
+
+use gapbuf::{GapBuffer, gap_buffer};
 use crate::error::MerlinError;
+
+// create a GapBuffer of characters
+
+fn gb_of_chars(s: &str) -> GapBuffer<char> {
+	GapBuffer::from_iter(s.chars())
+}
 
 // a structure representing a document, or "volume"
 
 pub struct Volume {
 	name: Option<PathBuf>,
-	buffer: Vec<String>,
+	buffer: GapBuffer<GapBuffer<char>>,
 
 	line: usize,
 	cursor: usize,
@@ -23,10 +34,20 @@ impl Volume {
 	// create a buffer with some existing text
 
 	pub fn from_text(contents: &str) -> Volume {
-		let mut buff: Vec<String> = contents.lines().map(|s| s.to_owned()).collect();
-		
+		/*
+			create our buffer, spliting our input into lines,
+			and split those up into unicode scalars.
+		*/
+
+		let mut buff: GapBuffer<GapBuffer<char>> = contents
+			.lines()
+			.map(gb_of_chars)
+			.collect();
+
+		// fall back if there isn't any text supplied
+
 		if buff.len() == 0 {
-			buff = vec![String::new()];
+			buff = gap_buffer![GapBuffer::new()];
 		}
 
 		Volume {
@@ -41,7 +62,7 @@ impl Volume {
 	// create a buffer from a file
 
 	pub fn from_file(fpath: &str) -> Result<Volume, MerlinError> {
-		let mut buff = Vec::new();
+		let mut buff = GapBuffer::new();
 		let mut w = true;
 
 		let path = PathBuf::from(fpath);
@@ -51,16 +72,14 @@ impl Volume {
 		if path.exists() {
 			match File::open(fpath) {
 				Ok(file) => {
-					let reader = BufReader::new(file);
-
-					for line in reader.lines() {
-						buff.push(line.or(Err(MerlinError::ReadFailed))?);
+					for line in BufReader::new(file).lines() {
+						buff.push_back(gb_of_chars(&line.or(Err(MerlinError::ReadFailed))?));
 					}
-				},
+				}
 				Err(_)   => return Err(MerlinError::ReadFailed),
 			}
 		} else {
-			buff.push(String::new());
+			buff.push_back(GapBuffer::new());
 			w = false;
 		}
 
@@ -71,12 +90,6 @@ impl Volume {
 			cursor: 0,
 			written: w
 		})
-	}
-
-	// return a mutable reference to the current line
-
-	fn current(&mut self) -> &mut String {
-		&mut self.buffer[self.line]
 	}
 }
 
