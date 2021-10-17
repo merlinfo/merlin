@@ -11,4 +11,4 @@ make install
 make spellbook # optional
 ```
 
-![Merlin editing the book of Genesis](genesis.png)
+![Merlin editing the book of Genesis](genesis.png "Merlin editing the book of Genesis")
