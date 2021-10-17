@@ -10,3 +10,5 @@ Building from source (rustc version 1.55.0):
 make install
 make spellbook # optional
 ```
+
+![Merlin editing the book of Genesis](genesis.png)
