@@ -3,6 +3,8 @@ use std::str::FromStr;
 use crate::commands::{commands, Command};
 use crate::error::MerlinError;
 
+const COMMAND_PREFIX: &str = ";";
+
 impl Plane {
 	// parse a line based on what mode the user is in
 
@@ -51,7 +53,7 @@ impl Plane {
 	// parse a single element, an "atom"
 
 	fn parse_atom(&mut self, atom: &str) -> Option<String> {
-		if let Some(stripped) = atom.strip_prefix(";") { // the atom is a command
+		if let Some(stripped) = atom.strip_prefix(COMMAND_PREFIX) { // the atom is a command
 			match self.parse_command(stripped) {
 				Ok((command, data)) => if let Err(e) = self.run_and_handle(command, data) { eprintln!("{}", e) }, // run and handle the command
 				Err(e)              => { // the command isn't valid...
