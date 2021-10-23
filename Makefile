@@ -1,5 +1,6 @@
 merlin:
 	cargo build --release
+	strip target/release/merlin
 
 install:
 	cargo install --path .

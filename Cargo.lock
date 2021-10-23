@@ -102,7 +102,7 @@ dependencies = [
 
 [[package]]
 name = "merlin"
-version = "2.0.0"
+version = "2.0.1"
 dependencies = [
  "clap",
  "ctrlc",
