@@ -9,28 +9,37 @@ use std::{
 	io::Write,
 };
 
-// wait for, and capture of a child process, dealing with all of the errors
+// wait for, and capture an output stream of a child process, dealing with all of the errors
 
 macro_rules! capture_output {
-	($command:ident) => {
+	($command:ident, $stream:ident) => {
 		String::from_utf8($command.wait_with_output()
-			.or(Err(MerlinError::InvalidExternal))?.stdout)
+			.or(Err(MerlinError::InvalidExternal))?.$stream)
 			.or(Err(MerlinError::InvalidExternal))
 	}
 }
 
-// run an external command and capture its output
+// make a "*cant" command: run a command and capture either stdout or stderr
 
-pub fn incant(script: &str) -> Result<String, MerlinError> {
-	let command = make_command(script, Stdio::inherit())?;
-	capture_output!(command)
+macro_rules! make_incant {
+	($name:ident, $out:expr, $err:expr, $stream:ident) => {
+		pub fn $name(script: &str) -> Result<String, MerlinError> {
+			let command = make_command(script,
+				Stdio::inherit(),
+				$out,
+				$err)?;
+
+			capture_output!(command, $stream)
+		}
+	}
 }
+
+make_incant!(incant, Stdio::piped(), Stdio::inherit(), stdout);
+make_incant!(decant, Stdio::inherit(), Stdio::piped(), stderr);
 
 // send text to an external command
 
-pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
-	let mut command = make_command(script, Stdio::piped())?;
-
+fn send_and_receive(command: &mut Child, input: &str) -> Result<(), MerlinError> {
 	// send data to stdin
 	
 	let mut stdin = command.stdin.take()
@@ -45,19 +54,34 @@ pub fn infuse(input: &str, script: &str) -> Result<String, MerlinError> {
 			"couldn't write to stdin")
 	}).or(Err(MerlinError::InvalidExternal))?;
 
-	capture_output!(command)
+	Ok(())
 }
+
+macro_rules! make_infuse {
+	($name:ident, $out:expr, $err:expr, $stream:ident) => {
+		pub fn $name(input: &str, script: &str) -> Result<String, MerlinError> {
+			let mut command = make_command(script, Stdio::piped(), $out, $err)?;
+			send_and_receive(&mut command, input)?;
+	
+			capture_output!(command, $stream)
+		}
+	}
+}
+
+make_infuse!(infuse, Stdio::piped(), Stdio::inherit(), stdout);
+make_infuse!(defuse, Stdio::inherit(), Stdio::piped(), stderr);
 
 // "make" a command from arguments, changing how it deals with io
 
-fn make_command(script: &str, sio: Stdio) -> Result<Child, MerlinError> {
+fn make_command(script: &str, stdin: Stdio, stdout: Stdio, stderr: Stdio) -> Result<Child, MerlinError> {
 	let args: Vec<&str> = script.split_whitespace().collect();
 
 	Command::new(&args[0])
 		.args(&args[1..])
 		.envs(env::vars_os())
-		.stdin(sio)
-		.stdout(Stdio::piped())
+		.stdin(stdin)
+		.stdout(stdout)
+		.stderr(stderr)
 		.spawn()
 		.or(Err(MerlinError::InvalidExternal))
 }

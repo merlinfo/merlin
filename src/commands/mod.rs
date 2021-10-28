@@ -14,7 +14,9 @@ pub enum Command {
 	Volume,
 	Volumes,
 	Incant,
+	Decant,
 	Infuse,
+	Defuse,
 	Spot,
 	Span,
 	Pin,
@@ -58,7 +60,9 @@ impl FromStr for Command {
 			"spine"      => Ok(Command::Spine),
 			"carved"     => Ok(Command::Carved),
 			"incant"     => Ok(Command::Incant),
+			"decant"     => Ok(Command::Decant),
 			"infuse"     => Ok(Command::Infuse),
+			"defuse"     => Ok(Command::Defuse),
 			"shelve"     => Ok(Command::Shelve),
 			"focus"      => Ok(Command::Focus),
 			"volume"     => Ok(Command::Volume),
@@ -130,8 +134,8 @@ impl Command {
 			Command::Volumes | Command::Carved   | Command::Atoms                                                                                                          => 0,
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 
 			Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin  | Command::Disenchant |
-			Command::Smash                                                                                                                                                 => 1,
-			Command::Infuse  | Command::Peer     | Command::Fray                                                                                                           => 2,
+			Command::Smash   | Command::Decant                                                                                                                             => 1,
+			Command::Infuse  | Command::Peer     | Command::Fray      | Command::Defuse                                                                                    => 2,
 			Command::Genesis                                                                                                                                               => choose_mm(1, 0),
 		};
 
