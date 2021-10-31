@@ -4,6 +4,7 @@ merlin:
 
 install:
 	cargo install --path .
+	strip ~/.cargo/bin/merlin
 
 spellbook: spellbook.mn
 	mkdir ~/.merlin
