@@ -29,7 +29,7 @@ impl fmt::Display for MerlinError {
 			MerlinError::NoVolumes             => "no open volumes",
 			MerlinError::CreationOrWriteFailed => "failed to create / write a file",
 			MerlinError::ReadFailed            => "failed to read a file",
-			MerlinError::FileAlreadyExists     => "file already exists",
+			MerlinError::FileAlreadyExists     => "file already exists or buffer is already named",
 			MerlinError::BufferNotNamed        => "buffer is not named",
 			MerlinError::UnknownNomen          => "unknown nomen",
 		};
