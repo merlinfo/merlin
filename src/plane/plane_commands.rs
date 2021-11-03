@@ -33,16 +33,14 @@ impl Plane {
 	pub fn shelve(&mut self, index: usize) -> Result<(), MerlinError> {
 		if index <= self.volumes.len() && index > 0 {
 			self.volumes.remove(index - 1);
+			
+			// if we still have volumes open decrease the index by one
+
+			if self.current_volume > 0 {
+				self.current_volume -= 1; 
+			}
 		} else {
 			return Err(MerlinError::OutOfBounds);
-		}
-
-		// if the current volume index is out of bounds, shift it to the last volume
-
-		let len = self.volumes.len();
-
-		if self.current_volume >= len && self.current_volume > 0 {
-			self.current_volume = len - 1;
 		}
 
 		Ok(())
