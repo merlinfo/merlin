@@ -73,9 +73,13 @@ impl Plane {
 	// add a new volume
 
 	fn push_volume(&mut self, v: Volume) {
-		self.volumes.push(v);
+		if self.volumes.is_empty() || self.current_volume == self.volumes.len()-1 {
+			self.volumes.push(v);
+		} else {
+			self.volumes.insert(self.current_volume+1, v);
+		}
 	
-		// only increment when there are more than one valumes open 
+		// only increment when there are more than one volumes open 
 
 		if self.volumes.len() > 1 {
 			self.current_volume += 1;
