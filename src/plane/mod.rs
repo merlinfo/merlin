@@ -4,6 +4,8 @@ use std::{
 	iter::FromIterator,
 };
 
+use gapbuf::GapBuffer;
+
 use crate::volume::Volume;
 use stack::Stack;
 
@@ -25,7 +27,7 @@ enum Vision {
 pub struct Plane {
 	stack: Stack,
 
-	volumes: Vec<Volume>,
+	volumes: GapBuffer<Volume>,
 	current_volume: usize,
 
 	vision: Vision, // current vision
@@ -41,7 +43,7 @@ impl Plane {
 	pub fn new() -> Plane {
 		Plane {
 			stack: Stack::new(),
-			volumes: Vec::new(),
+			volumes: GapBuffer::new(),
 
 			current_volume: 0,
 
@@ -74,7 +76,7 @@ impl Plane {
 
 	fn push_volume(&mut self, v: Volume) {
 		if self.volumes.is_empty() || self.current_volume == self.volumes.len()-1 {
-			self.volumes.push(v);
+			self.volumes.push_back(v);
 		} else {
 			self.volumes.insert(self.current_volume+1, v);
 		}
