@@ -181,10 +181,9 @@ impl Volume {
 	// return a character based on if the buffer is saved or not
 
 	pub fn carved(&self) -> String {
-		if self.written {
-			String::from("@")
-		} else {
-			String::from("!")
+		match self.written {
+			true  => String::from("@"),
+			false => String::from("!"),
 		}
 	}
 
