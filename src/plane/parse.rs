@@ -125,7 +125,7 @@ impl Plane {
 			Command::Atom                              => self.vision = Vision::Atom,
 			Command::Scribe                            => self.vision = Vision::Scribe,
 			Command::Adieu                             => self.running = false,
-			Command::Nomen                             => {
+			Command::Nomen | Command::Bottle                            => {
 					// create a new nomen, popping the name from the data vector
 
 					let n = data.pop().unwrap();

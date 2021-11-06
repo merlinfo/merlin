@@ -42,6 +42,7 @@ pub enum Command {
 	Scribe,
 	Adieu,
 	Nomen,
+	Bottle,
 	Disenchant,
 	Smash,
 	Merlin,
@@ -92,6 +93,7 @@ impl FromStr for Command {
 			"scribe"     => Ok(Command::Scribe),
 			"adieu"      => Ok(Command::Adieu),
 			"nomen"      => Ok(Command::Nomen),
+			"bottle"     => Ok(Command::Bottle),
 			"disenchant" => Ok(Command::Disenchant),
 			"smash"      => Ok(Command::Smash),
 			"merlin"     => Ok(Command::Merlin),
@@ -135,7 +137,7 @@ impl Command {
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 
 			Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin  | Command::Disenchant |
 			Command::Smash   | Command::Decant                                                                                                                             => 1,
-			Command::Infuse  | Command::Peer     | Command::Fray      | Command::Defuse                                                                                    => 2,
+			Command::Infuse  | Command::Peer     | Command::Fray      | Command::Defuse   | Command::Bottle                                                                => 2,
 			Command::Genesis                                                                                                                                               => choose_mm(1, 0),
 		};
 
