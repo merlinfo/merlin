@@ -57,13 +57,13 @@ impl Plane {
 			match self.parse_command(stripped) {
 				Ok((command, data)) => if let Err(e) = self.run_and_handle(command, data) { eprintln!("{}", e) }, // run and handle the command
 				Err(e)              => { // the command isn't valid...
-					match self.nomens.remove(stripped) { // check if it is a nomen
-						Some(n) => {
-							for atom in &n {
+					match self.nomens.remove_entry(stripped) { // check if it is a nomen
+						Some((k, v)) => { // add it if it is
+							for atom in &v {
 								self.atom_push(&atom);
 							}
 
-							self.nomens.insert(stripped.to_string(), n);
+							self.nomens.insert(k, v);
 						},
 						None    => eprintln!("{}", e),
 					}
