@@ -5,6 +5,7 @@ use std::io::{self, Write, BufRead};
 impl Plane {
 	pub fn repl(&mut self) {
 		let mut input = String::new();
+		let stdin = io::stdin();
 
 		while self.running {
 			// run our prompt nomen
@@ -15,7 +16,7 @@ impl Plane {
 			};
 
 			flush_stdout();                                                          // flush stdout, handling any errors
-			util::err_msg(io::stdin().read_line(&mut input), "unable to read line"); // read a line of input (handle any errors)
+			util::err_msg(stdin.read_line(&mut input), "unable to read line"); // read a line of input (handle any errors)
 
 			// parse our line, stripping newlines
 
@@ -27,10 +28,13 @@ impl Plane {
 
 	pub fn parse_stdin(&mut self) {
 		for line in io::stdin().lock().lines() {
+			print!("> ");
+			flush_stdout();
+
 			self.parse_line(strip_nl(&line
 				.expect(&format!("{} can't read stdin", util::ERROR_PREFIX))));
 			
-			flush_stdout();
+			//flush_stdout();
 
 			if !self.running {
 				break;
