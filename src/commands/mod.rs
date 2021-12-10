@@ -130,7 +130,7 @@ impl Command {
 
 		let needed = match self {
 			Command::Tether                                                                                                                                                => all_with_min(3), // we need a minimum of 3
-			Command::Nomen                                                                                                                                                 => all_with_min(2), // min of 1
+			Command::Nomen                                                                                                                                                 => all_with_min(1), // min of 1
 			Command::Spot    | Command::Span     | Command::Molecule  | Command::Pen      | Command::Orbit  | Command::Decay    | Command::Destroy |
 			Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume     |
 			Command::Volumes | Command::Carved   | Command::Atoms                                                                                                          => 0,
