@@ -58,7 +58,8 @@ impl Plane {
 				(String::from("tab"), vec![String::from("\t")]),
 				(String::from("space"), vec![String::from(" ")]),
 				(String::from("blank"), vec![String::from("")]),
-			
+				(String::from("escape"), vec![String::from("\x1B")]),
+
 				// notation to be executing after each line of input is entered 
 
 				(String::from("scribe-nomen"), Vec::new()),

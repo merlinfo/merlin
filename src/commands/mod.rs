@@ -137,7 +137,8 @@ impl Command {
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 
 			Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin  | Command::Disenchant |
 			Command::Smash   | Command::Decant                                                                                                                             => 1,
-			Command::Infuse  | Command::Peer     | Command::Fray      | Command::Defuse   | Command::Bottle                                                                => 2,
+			Command::Infuse  | Command::Peer     | Command::Fray      | Command::Defuse                                                                                    => 2,
+			Command::Bottle                                                                                                                                                => choose_mm(2, 1),
 			Command::Genesis                                                                                                                                               => choose_mm(1, 0),
 		};
 
