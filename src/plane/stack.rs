@@ -72,4 +72,53 @@ impl Stack {
 	pub fn destroy(&mut self) {
 		self.stack.clear();
 	}
+
+	// connect items on the stack
+
+	pub fn tether(&mut self) -> Result<(), MerlinError> {
+		if self.stack.len() >= 3 {
+			let last = self.stack.pop().unwrap();
+			let tethered = self.stack.join(&last);
+
+			self.stack.clear();
+
+			return Ok(self.stack.push(tethered))
+		}
+
+		Err(MerlinError::InvalidOrNoArguments)
+	}
+
+	// split an atom by another atom
+
+	pub fn fray(&mut self) -> Result<(), MerlinError> {
+		// get the last two elements from the stack
+
+		let (splitter, atom) = (self.pop()?, self.pop()?);
+
+		// loop through each element separated by "splitter" and add it to the stack
+
+		for a in atom.split(&splitter) {
+			if !a.is_empty() {
+				self.stack.push(a.to_string())
+			}
+		}
+
+		Ok(())
+	}
+
+	// connect exactly two items together
+
+	pub fn stitch(&mut self) -> Result<(), MerlinError> {	
+		let (connector, b, mut a) = (self.pop()?, self.pop()?, self.pop()?);
+		
+		a.push_str(&connector);
+		a.push_str(&b);
+
+		Ok(self.stack.push(a))
+	}
+
+	fn pop(&mut self) -> Result<String, MerlinError> {
+		self.stack.pop()
+			.ok_or(MerlinError::InvalidOrNoArguments)
+	}
 }

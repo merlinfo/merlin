@@ -105,15 +105,5 @@ impl Plane {
 	            _ => self.current_volume + 1,
 	        }
 	}
-
-	// split atom by another atom
-
-	pub fn fray(&mut self, atom: &str, s: &str) {
-		for a in atom.split(s) {
-			if !a.is_empty() {
-				self.stack.push(a.to_string())
-			}
-		}
-	}
 }
 

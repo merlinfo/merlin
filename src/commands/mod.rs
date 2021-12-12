@@ -37,6 +37,7 @@ pub enum Command {
 	Decay,
 	Destroy,
 	Tether,
+	Stitch,
 	Fray,
 	Atom,
 	Scribe,
@@ -88,6 +89,7 @@ impl FromStr for Command {
 			"decay"      => Ok(Command::Decay),
 			"destroy"    => Ok(Command::Destroy),
 			"tether"     => Ok(Command::Tether),
+			"stitch"     => Ok(Command::Stitch),
 			"fray"       => Ok(Command::Fray),
 			"atom"       => Ok(Command::Atom),
 			"scribe"     => Ok(Command::Scribe),
@@ -129,15 +131,14 @@ impl Command {
 		};
 
 		let needed = match self {
-			Command::Tether                                                                                                                                                => all_with_min(3), // we need a minimum of 3
 			Command::Nomen                                                                                                                                                 => all_with_min(1), // min of 1
 			Command::Spot    | Command::Span     | Command::Molecule  | Command::Pen      | Command::Orbit  | Command::Decay    | Command::Destroy |
 			Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume     |
-			Command::Volumes | Command::Carved   | Command::Atoms                                                                                                          => 0,
+			Command::Volumes | Command::Carved   | Command::Atoms     | Command::Tether   | Command::Stitch | Command::Fray                                                => 0,
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 
 			Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin  | Command::Disenchant |
 			Command::Smash   | Command::Decant                                                                                                                             => 1,
-			Command::Infuse  | Command::Peer     | Command::Fray      | Command::Defuse                                                                                    => 2,
+			Command::Infuse  | Command::Peer     | Command::Defuse                                                                                                         => 2,
 			Command::Bottle                                                                                                                                                => choose_mm(2, 1),
 			Command::Genesis                                                                                                                                               => choose_mm(1, 0),
 		};
