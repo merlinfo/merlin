@@ -12,6 +12,12 @@ use std::{
 use gapbuf::{GapBuffer, gap_buffer};
 use crate::error::MerlinError;
 
+// create a blank line GapBuffer
+
+fn blank_line() -> GapBuffer<GapBuffer<char>> {
+	gap_buffer![GapBuffer::new()]
+}
+
 // create a GapBuffer of characters
 
 fn gb_of_chars(s: &str) -> GapBuffer<char> {
@@ -46,8 +52,8 @@ impl Volume {
 
 		// fall back if there isn't any text supplied
 
-		if buff.len() == 0 {
-			buff = gap_buffer![GapBuffer::new()];
+		if buff.is_empty() {
+			buff = blank_line();
 		}
 
 		Volume {
@@ -62,7 +68,7 @@ impl Volume {
 	// create a buffer from a file
 
 	pub fn from_file(fpath: &str) -> Result<Volume, MerlinError> {
-		let mut buff = GapBuffer::new();
+		let mut buff = blank_line();
 		let mut w = true;
 
 		let path = PathBuf::from(fpath);
@@ -75,11 +81,16 @@ impl Volume {
 					for line in BufReader::new(file).lines() {
 						buff.push_back(gb_of_chars(&line.or(Err(MerlinError::ReadFailed))?));
 					}
+
+					// remove the blank line if we have successfully populated the buffer
+
+					if buff.len() > 1 {
+						buff.pop_front();
+					}
 				}
 				Err(_)   => return Err(MerlinError::ReadFailed),
 			}
 		} else {
-			buff.push_back(GapBuffer::new());
 			w = false;
 		}
 
