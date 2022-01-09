@@ -92,7 +92,7 @@ impl Plane {
 
 				Ok(())
 			},
-			Err(_)   => Err(MerlinError::ReadFailed),
+			Err(_)   => Err(MerlinError::CannotOpen),
 
 		}
 	}

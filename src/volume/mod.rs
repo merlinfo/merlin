@@ -88,7 +88,7 @@ impl Volume {
 						buff.pop_front();
 					}
 				}
-				Err(_)   => return Err(MerlinError::ReadFailed),
+				Err(_)   => return Err(MerlinError::CannotOpen),
 			}
 		} else {
 			w = false;
