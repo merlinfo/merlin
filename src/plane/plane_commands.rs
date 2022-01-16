@@ -105,5 +105,13 @@ impl Plane {
 	            _ => self.current_volume + 1,
 	        }
 	}
+
+	// return the expansion of a nomen listing
+
+	pub fn rune(&self, nomen: &str) -> Result<String, MerlinError> {
+		Ok(self.nomens.get(nomen)
+			.ok_or(MerlinError::UnknownNomen)?
+			.join(" "))
+	}
 }
 

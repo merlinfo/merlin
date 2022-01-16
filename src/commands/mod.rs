@@ -46,6 +46,7 @@ pub enum Command {
 	Bottle,
 	Disenchant,
 	Smash,
+	Rune,
 	Merlin,
 	Summon,
 	Dub,
@@ -98,6 +99,7 @@ impl FromStr for Command {
 			"bottle"     => Ok(Command::Bottle),
 			"disenchant" => Ok(Command::Disenchant),
 			"smash"      => Ok(Command::Smash),
+			"rune"       => Ok(Command::Rune),
 			"merlin"     => Ok(Command::Merlin),
 			"summon"     => Ok(Command::Summon),
 			"dub"        => Ok(Command::Dub),
@@ -137,7 +139,7 @@ impl Command {
 			Command::Volumes | Command::Carved   | Command::Atoms     | Command::Tether   | Command::Stitch | Command::Fray                                                => 0,
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 
 			Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin  | Command::Disenchant |
-			Command::Smash   | Command::Decant                                                                                                                             => 1,
+			Command::Smash   | Command::Decant   | Command::Rune                                                                                                           => 1,
 			Command::Infuse  | Command::Peer     | Command::Defuse                                                                                                         => 2,
 			Command::Bottle                                                                                                                                                => choose_mm(2, 1),
 			Command::Genesis                                                                                                                                               => choose_mm(1, 0),
