@@ -34,6 +34,7 @@ pub enum Command {
 	Atoms,
 	Pen,
 	Orbit,
+	Pervert,
 	Decay,
 	Destroy,
 	Tether,
@@ -87,6 +88,7 @@ impl FromStr for Command {
 			"atoms"      => Ok(Command::Atoms),
 			"pen"        => Ok(Command::Pen),
 			"orbit"      => Ok(Command::Orbit),
+			"pervert"    => Ok(Command::Pervert),
 			"decay"      => Ok(Command::Decay),
 			"destroy"    => Ok(Command::Destroy),
 			"tether"     => Ok(Command::Tether),
@@ -134,7 +136,7 @@ impl Command {
 
 		let needed = match self {
 			Command::Nomen                                                                                                                                                 => all_with_min(1), // min of 1
-			Command::Spot    | Command::Span     | Command::Molecule  | Command::Pen      | Command::Orbit  | Command::Decay    | Command::Destroy |
+			Command::Spot    | Command::Span     | Command::Molecule  | Command::Pen      | Command::Orbit  | Command::Pervert  | Command::Decay   | Command::Destroy    |
 			Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume     |
 			Command::Volumes | Command::Carved   | Command::Atoms     | Command::Tether   | Command::Stitch | Command::Fray                                                => 0,
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 

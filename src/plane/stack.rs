@@ -61,6 +61,12 @@ impl Stack {
 		Ok(())
 	}
 
+	// "pervert" (reverse) the stack
+
+	pub fn pervert(&mut self) {
+		self.stack.reverse()
+	}
+
 	// remove the last item from the stack
 
 	pub fn decay(&mut self) {

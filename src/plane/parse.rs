@@ -118,6 +118,7 @@ impl Plane {
 			Command::Molecule                          => self.stack.molecule(),
 			Command::Pen                               => self.stack.pen(),
 			Command::Orbit                             => self.stack.orbit()?,
+			Command::Pervert			   => self.stack.pervert(),
 			Command::Decay                             => self.stack.decay(),
 			Command::Destroy                           => self.stack.destroy(),
 			Command::Tether                            => self.stack.tether()?,
