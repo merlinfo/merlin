@@ -107,6 +107,7 @@ dependencies = [
  "clap",
  "ctrlc",
  "gapbuf",
+ "nix",
  "shellexpand",
 ]
 
