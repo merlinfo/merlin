@@ -113,5 +113,16 @@ impl Plane {
 			.ok_or(MerlinError::UnknownNomen)?
 			.join(" "))
 	}
-}
 
+	// return a list of all defined nomens to the stack
+
+	pub fn protean(&self) -> String {
+		let mut memory = String::new();
+
+		self.nomens
+			.keys()
+			.for_each(|nomen| { memory.push_str(nomen) ; memory.push_str("\n")});
+
+		return memory
+	}
+}

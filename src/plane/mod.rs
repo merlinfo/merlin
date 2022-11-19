@@ -77,7 +77,7 @@ impl Plane {
 
 	fn push_volume(&mut self, v: Volume) {
 		if self.volumes.is_empty() || self.current_volume == self.volumes.len()-1 {
-			self.volumes.push_back(v);
+			self.volumes.push_back(v)
 		} else {
 			self.volumes.insert(self.current_volume+1, v);
 		}
@@ -87,6 +87,7 @@ impl Plane {
 		if self.volumes.len() > 1 {
 			self.current_volume += 1;
 		}
+
 	}
 	
 }

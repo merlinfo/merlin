@@ -53,6 +53,7 @@ pub enum Command {
 	Dub,
 	Carve,
 	Spellbook,
+	Protean,
 }
 
 impl FromStr for Command {
@@ -107,6 +108,7 @@ impl FromStr for Command {
 			"dub"        => Ok(Command::Dub),
 			"carve"      => Ok(Command::Carve),
 			"spellbook"  => Ok(Command::Spellbook),
+			"protean"    => Ok(Command::Protean),
 			_            => Err(MerlinError::UnknownCommand),
 		}
 	}
@@ -138,7 +140,7 @@ impl Command {
 			Command::Nomen                                                                                                                                                 => all_with_min(1), // min of 1
 			Command::Spot    | Command::Span     | Command::Molecule  | Command::Pen      | Command::Orbit  | Command::Pervert  | Command::Decay   | Command::Destroy    |
 			Command::Atom    | Command::Scribe   | Command::Adieu     | Command::Carve    | Command::Pin    | Command::Columns  | Command::Burn    | Command::Volume     |
-			Command::Volumes | Command::Carved   | Command::Atoms     | Command::Tether   | Command::Stitch | Command::Fray                                                => 0,
+			Command::Volumes | Command::Carved   | Command::Atoms     | Command::Tether   | Command::Stitch | Command::Fray     | Command::Protean                         => 0,
 			Command::Focus   | Command::Traverse | Command::Appear    | Command::Shave    | Command::Shelve | Command::Inscribe | Command::Trample | Command::Incant     | 
 			Command::Summon  | Command::Dub      | Command::Spellbook | Command::Shift    | Command::Infix  | Command::Spine    | Command::Merlin  | Command::Disenchant |
 			Command::Smash   | Command::Decant   | Command::Rune                                                                                                           => 1,

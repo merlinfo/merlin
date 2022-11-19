@@ -156,6 +156,7 @@ impl Plane {
 			Command::Volume                            => return ok_some(self.volume().to_string()),
 			Command::Volumes                           => return ok_some(self.volumes.len().to_string()),
 			Command::Atoms                             => return ok_some(self.stack.len().to_string()),
+			Command::Protean                           => return ok_some(self.protean()),
 			_                                          => { // the following commands require buffers to be open
 				if self.volumes.len() > 0 { // buffers / files are open
 					let cvol = &mut self.volumes[self.current_volume]; // current volume
