@@ -121,8 +121,8 @@ impl Plane {
 
 		self.nomens
 			.keys()
-			.for_each(|nomen| { memory.push_str(nomen) ; memory.push_str("\n")});
+			.for_each(|nomen| { memory.push_str(nomen) ; memory.push('\n')});
 
-		return memory
+		memory
 	}
 }
