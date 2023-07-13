@@ -1,8 +1,4 @@
-use std::{
-	collections::HashMap,
-	array::IntoIter,
-	iter::FromIterator,
-};
+use std::collections::HashMap;
 
 use gapbuf::GapBuffer;
 
@@ -16,14 +12,16 @@ mod stack;
 
 // an enum that represents the various modes of merlin
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 enum Vision {
+	#[default]
 	Atom,
 	Scribe,
 }
 
 // a structure representing our enviroment or "plane"
 
+#[derive(Default)]
 pub struct Plane {
 	stack: Stack,
 
@@ -40,8 +38,8 @@ pub struct Plane {
 impl Plane {
 	// create a new plane with no open volumes
  
-	pub fn new() -> Plane {
-		Plane {
+	pub fn new() -> Self {
+		Self {
 			stack: Stack::new(),
 			volumes: GapBuffer::new(),
 
@@ -53,7 +51,7 @@ impl Plane {
 
 			// built in nomens
 
-			nomens: HashMap::<String, Vec<String>>::from_iter(IntoIter::new([
+			nomens: HashMap::<String, Vec<String>>::from([
 				(String::from("new"), vec![String::from("\n")]),
 				(String::from("tab"), vec![String::from("\t")]),
 				(String::from("space"), vec![String::from(" ")]),
@@ -69,7 +67,7 @@ impl Plane {
 
 				(String::from("atom-prompt"), vec![", ".to_string(), ";pen".to_string(), ";decay".to_string()]),
 				(String::from("scribe-prompt"), Vec::new()),
-			])),
+			]),
 		}
 	}
 

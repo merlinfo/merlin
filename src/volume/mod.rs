@@ -26,6 +26,7 @@ fn gb_of_chars(s: &str) -> GapBuffer<char> {
 
 // a structure representing a document, or "volume"
 
+#[derive(Default)]
 pub struct Volume {
 	name: Option<PathBuf>,
 	buffer: GapBuffer<GapBuffer<char>>,
@@ -39,7 +40,7 @@ pub struct Volume {
 impl Volume {
 	// create a buffer with some existing text
 
-	pub fn from_text(contents: &str) -> Volume {
+	pub fn from_text(contents: &str) -> Self {
 		/*
 			create our buffer, spliting our input into lines,
 			and split those up into unicode scalars.
@@ -56,7 +57,7 @@ impl Volume {
 			buff = blank_line();
 		}
 
-		Volume {
+		Self {
 			name: None,
 			buffer: buff,
 			line: 0,
@@ -67,7 +68,7 @@ impl Volume {
 
 	// create a buffer from a file
 
-	pub fn from_file(fpath: &str) -> Result<Volume, MerlinError> {
+	pub fn from_file(fpath: &str) -> Result<Self, MerlinError> {
 		let mut buff = blank_line();
 		let mut w = true;
 
@@ -94,7 +95,7 @@ impl Volume {
 			w = false;
 		}
 
-		Ok(Volume {
+		Ok(Self {
 			name: Some(path),
 			buffer: buff,
 			line: 0,

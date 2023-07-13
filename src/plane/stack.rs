@@ -2,6 +2,7 @@ use crate::error::MerlinError;
 
 // stack struct
 
+#[derive(Default)]
 pub struct Stack {
 	stack: Vec<String>
 }
@@ -9,8 +10,8 @@ pub struct Stack {
 impl Stack {
 	// new, empty stack
 
-	pub fn new() -> Stack {
-		Stack { stack: Vec::new() }
+	pub fn new() -> Self {
+		Self::default()
 	}
 
 	pub fn len(&self) -> usize {

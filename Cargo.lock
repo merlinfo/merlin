@@ -70,9 +70,9 @@ dependencies = [
 
 [[package]]
 name = "gapbuf"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53e0a2d28aa8f806e78721d4ba55b43c92320a5922a41b7a74ae2c417116a40e"
+checksum = "8a010292641ef224ac75104f2c6452e9a6cc74238ef6938e52814904ef77a592"
 
 [[package]]
 name = "getrandom"
