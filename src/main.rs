@@ -15,7 +15,7 @@ mod util;
 
 fn main() {
 	let merlin_args = App::new("merlin:")
-		.about("An esoteric text editor for wizards")
+		.about("an esoteric text editor for wizards")
 		.version(crate_version!())
 		.arg(Arg::with_name("interrupt")
 			.short("i")
