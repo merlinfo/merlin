@@ -76,7 +76,7 @@ make_infuse!(defuse, Stdio::inherit(), Stdio::piped(), stderr);
 fn make_command(script: &str, stdin: Stdio, stdout: Stdio, stderr: Stdio) -> Result<Child, MerlinError> {
 	let args: Vec<&str> = script.split_whitespace().collect();
 
-	if args.len() > 0 { // don't attempt to run if the command name is a blank string
+	if !args.is_empty() { // don't attempt to run if the command name is a blank string
 		Command::new(&args[0])
 			.args(&args[1..])
 			.envs(env::vars_os())
